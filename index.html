@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IRONLOG">
+<title>IRONLOG</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0a0a0a; --bg2: #111111; --bg3: #1a1a1a;
+    --card: #161616; --border: #2a2a2a;
+    --accent: #e8ff3c; --accent2: #ff3c3c;
+    --text: #f0f0f0; --muted: #666; --muted2: #444;
+    --radius: 14px; --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { height:100%; background:var(--bg); color:var(--text); font-family:'DM Sans', sans-serif; overflow:hidden; }
+  #app { display:flex; flex-direction:column; height:100dvh; }
+  #header { padding:16px 20px 12px; background:var(--bg); border-bottom:1px solid var(--border); flex-shrink:0; display:flex; align-items:center; justify-content:space-between; }
+  #header h1 { font-family:'Bebas Neue', sans-serif; font-size:28px; letter-spacing:3px; color:var(--accent); }
+  #header .subtitle { font-size:11px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-top:1px; }
+  #content { flex:1; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; padding-bottom:calc(70px + var(--safe-bottom)); }
+  
+  #nav { position:fixed; bottom:0; left:0; right:0; height:calc(60px + var(--safe-bottom)); background:var(--bg2); border-top:1px solid var(--border); display:flex; align-items:flex-start; padding-top:8px; z-index:100; }
+  .nav-btn { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; background:none; border:none; color:var(--muted); cursor:pointer; padding:4px; transition:color .2s; }
+  .nav-btn.active { color:var(--accent); }
+  .nav-btn svg { width:22px; height:22px; }
+  .nav-btn span { font-size:10px; letter-spacing:.5px; }
+
+  .page { display:none; padding:20px; }
+  .page.active { display:block; }
+  .sec-title { font-family:'Bebas Neue', sans-serif; font-size:22px; letter-spacing:2px; color:var(--accent); margin-bottom:16px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:12px 20px; border-radius:10px; border:none; cursor:pointer; font-family:'DM Sans', sans-serif; font-weight:600; font-size:14px; transition:all .15s; }
+  .btn-primary { background:var(--accent); color:#000; }
+  .btn-danger { background:var(--accent2); color:#fff; }
+  .btn-ghost { background:var(--bg3); color:var(--text); border:1px solid var(--border); }
+  .btn-full { width:100%; }
+  .btn-sm { padding:8px 14px; font-size:13px; border-radius:8px; }
+  .btn-icon { padding:8px 10px; }
+
+  input, select { background:var(--bg3); border:1px solid var(--border); border-radius:10px; color:var(--text); font-family:'DM Sans', sans-serif; font-size:14px; padding:12px 14px; width:100%; outline:none; }
+  label { font-size:12px; color:var(--muted); letter-spacing:.5px; display:block; margin-bottom:6px; text-transform:uppercase; }
+  .field { margin-bottom:14px; }
+
+  .ex-block { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:12px; overflow:hidden; }
+  .ex-header { padding:14px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); }
+  .ex-name { font-weight:600; font-size:15px; }
+  .ex-body { padding:12px 16px; }
+  .set-row { display:grid; grid-template-columns:32px 1fr 1fr 40px; gap:8px; align-items:center; margin-bottom:8px; }
+  .set-num { font-size:12px; color:var(--muted); text-align:center; font-weight:600; }
+  .set-input { padding:10px; font-size:14px; text-align:center; }
+  .set-done { width:36px; height:36px; border-radius:8px; border:2px solid var(--border); background:none; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .set-done.checked { background:var(--accent); border-color:var(--accent); }
+  .set-done.checked svg { stroke:#000; }
+  .set-done svg { width:18px; height:18px; stroke:var(--muted); }
+  .set-labels { display:grid; grid-template-columns:32px 1fr 1fr 40px; gap:8px; margin-bottom:6px; }
+  .set-labels span { font-size:10px; color:var(--muted); text-align:center; text-transform:uppercase; letter-spacing:.5px; }
+  
+  .timer-bar { background:var(--bg2); border-bottom:1px solid var(--border); padding:10px 20px; display:flex; align-items:center; gap:12px; }
+  .timer-display { font-family:'Bebas Neue', sans-serif; font-size:28px; color:var(--accent); letter-spacing:2px; min-width:80px; }
+  
+  .workout-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px; position:relative; }
+  .workout-date { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+  .workout-name { font-family:'Bebas Neue', sans-serif; font-size:20px; color:var(--text); letter-spacing:1px; margin-bottom:8px; }
+  .workout-stats { display:flex; gap:16px; margin-bottom:10px; }
+  .stat { text-align:center; }
+  .stat-val { font-family:'Bebas Neue', sans-serif; font-size:20px; color:var(--accent); }
+  .stat-lbl { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  
+  .workout-details { display: none; margin-top: 14px; border-top: 1px solid var(--border); padding-top: 12px; animation: fadeIn 0.3s; }
+  .workout-card.expanded .workout-details { display: block; }
+  .toggle-icon { transition: transform 0.2s; margin-left: 6px; vertical-align: middle; }
+  .workout-card.expanded .toggle-icon { transform: rotate(180deg); }
+  .det-ex-name { font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--accent); letter-spacing: 1px; margin-top: 10px; }
+  .det-set { font-size: 13px; display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed var(--bg3); }
+  .ex-chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .ex-chip { background:var(--bg3); border:1px solid var(--border); border-radius:6px; padding:4px 10px; font-size:11px; color:var(--muted); }
+
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.8); z-index:200; display:flex; align-items:flex-end; opacity:0; pointer-events:none; transition:opacity .2s; }
+  .modal-overlay.open { opacity:1; pointer-events:all; }
+  .modal { background:var(--bg2); border-radius:20px 20px 0 0; border-top:1px solid var(--border); padding:24px 20px calc(24px + var(--safe-bottom)); width:100%; max-height:90dvh; overflow-y:auto; transform:translateY(100%); transition:transform .3s cubic-bezier(.32,1.25,.55,1); }
+  .modal-overlay.open .modal { transform:translateY(0); }
+  .modal-handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
+
+  .big-btn { width:100%; padding:18px; background:var(--accent); color:#000; border:none; border-radius:var(--radius); font-family:'Bebas Neue', sans-serif; font-size:22px; letter-spacing:3px; cursor:pointer; }
+  
+  @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+  .delete-btn { position:absolute; top:12px; right:12px; background:none; border:none; color:var(--muted2); cursor:pointer; z-index: 10; }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div id="header">
+    <div><h1>IRONLOG</h1><div class="subtitle">Tu diario de entreno</div></div>
+  </div>
+
+  <div class="timer-bar" id="timer-bar" style="display:none">
+    <div>
+      <div style="font-size:11px; color:var(--muted); text-transform:uppercase;">Tiempo</div>
+      <div class="timer-display" id="timer-display">00:00</div>
+    </div>
+    <div style="flex:1"></div>
+    <button class="btn btn-danger btn-sm" onclick="finishWorkout()">Terminar</button>
+  </div>
+
+  <div id="content">
+    <div id="page-home" class="page active">
+      <div class="sec-title">Hoy</div>
+      <div id="wip-banner" style="display:none"></div>
+      <button class="big-btn" id="start-btn" onclick="showStartModal()">+ NUEVO ENTRENO</button>
+      <div style="height:20px"></div>
+      <div class="sec-title">Reciente</div>
+      <div id="recent-list"></div>
+    </div>
+
+    <div id="page-workout" class="page">
+      <div id="workout-exercises"></div>
+      <button class="btn btn-ghost btn-full" onclick="addExerciseToWorkout()">+ Añadir ejercicio</button>
+    </div>
+
+    <div id="page-history" class="page">
+      <div class="sec-title">Historial Completo</div>
+      <div id="history-list"></div>
+    </div>
+
+    <div id="page-templates" class="page">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <div class="sec-title" style="margin:0">Mis Splits</div>
+        <button class="btn btn-primary btn-sm" onclick="showTemplateModal()">+ Crear</button>
+      </div>
+      <div id="templates-list"></div>
+    </div>
+
+    <div id="page-progress" class="page">
+      <div class="sec-title">Análisis de Progreso</div>
+      <div class="field">
+        <label>Ejercicio</label>
+        <select id="progress-exercise-select" onchange="renderProgressChart()"></select>
+      </div>
+      <div class="card"><canvas id="progress-chart" style="max-height:200px"></canvas></div>
+      <div id="progress-stats"></div>
+    </div>
+  </div>
+
+  <nav id="nav">
+    <button class="nav-btn active" onclick="goTo('home')" id="nav-home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+      <span>Inicio</span>
+    </button>
+    <button class="nav-btn" onclick="goTo('workout')" id="nav-workout">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 5v14M18 5v14M3 8h3M18 8h3M3 16h3M18 16h3"/></svg>
+      <span>Entreno</span>
+    </button>
+    <button class="nav-btn" onclick="goTo('history')" id="nav-history">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+      <span>Historial</span>
+    </button>
+    <button class="nav-btn" onclick="goTo('templates')" id="nav-templates">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      <span>Splits</span>
+    </button>
+    <button class="nav-btn" onclick="goTo('progress')" id="nav-progress">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+      <span>Progreso</span>
+    </button>
+  </nav>
+</div>
+
+<div class="modal-overlay" id="modal-start">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div id="start-templates-section"></div>
+    <div class="field" style="margin-top:20px">
+      <label>O empieza en blanco</label>
+      <input type="text" id="workout-name-input" placeholder="Nombre del entreno">
+    </div>
+    <button class="btn btn-primary btn-full" onclick="startWorkoutBlank()">EMPEZAR</button>
+    <button class="btn btn-ghost btn-full" onclick="closeModal('modal-start')" style="margin-top:10px">Cancelar</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-summary">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="sec-title">Resumen de sesión</div>
+    <div id="summary-content"></div>
+    <button class="btn btn-primary btn-full" onclick="saveWorkout()" style="margin-top:20px">GUARDAR EN EL DIARIO</button>
+    <button class="btn btn-ghost btn-full" onclick="continueEditing()" style="margin-top:10px; color:var(--accent)">EDITAR SESIÓN</button>
+    <button class="btn btn-ghost btn-full" onclick="discardWorkout()" style="margin-top:10px; color:var(--accent2)">Descartar</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-template">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="sec-title" id="template-modal-title">Split Nuevo</div>
+    <input type="text" id="template-name-input" placeholder="Ej: Push Day">
+    <div id="template-ex-fields" style="margin-top:15px"></div>
+    <button class="btn btn-ghost btn-full" onclick="addTemplateExField()">+ Añadir Ejercicio</button>
+    <button class="btn btn-primary btn-full" onclick="saveTemplate()" style="margin-top:20px">GUARDAR SPLIT</button>
+  </div>
+</div>
+
+<script>
+let state = {
+  workouts: JSON.parse(localStorage.getItem('ironlog_workouts') || '[]'),
+  templates: JSON.parse(localStorage.getItem('ironlog_templates') || '[]'),
+  currentWorkout: null,
+  timerInterval: null,
+  timerSeconds: 0,
+  progressChart: null
+};
+
+function goTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('nav-' + page).classList.add('active');
+  if(page === 'home') renderHome();
+  if(page === 'history') renderHistory();
+  if(page === 'templates') renderTemplates();
+  if(page === 'progress') renderProgress();
+  if(page === 'workout') renderWorkoutPage();
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function workoutCardHTML(w) {
+  const doneExs = w.exercises.filter(ex => ex.sets.some(s => s.done));
+  const totalSets = w.exercises.reduce((a, ex) => a + ex.sets.filter(s => s.done).length, 0);
+  const totalVol = w.exercises.reduce((a, ex) => a + ex.sets.filter(s=>s.done).reduce((b,s) => b+(parseFloat(s.weight)||0)*(parseInt(s.reps)||0), 0), 0);
+  
+  const detailsHTML = doneExs.map(ex => {
+    const sets = ex.sets.filter(s => s.done).map((s, i) => `
+      <div class="det-set">
+        <span style="color:var(--muted)">Serie ${i+1}</span>
+        <span>${s.weight}kg x ${s.reps}</span>
+      </div>`).join('');
+    return `<div><div class="det-ex-name">${ex.name}</div>${sets}</div>`;
+  }).join('');
+
+  return `
+    <div class="workout-card" id="card-${w.id}">
+      <button class="delete-btn" onclick="event.stopPropagation(); deleteWorkout('${w.id}')">×</button>
+      <div onclick="toggleDetails('${w.id}')">
+        <div class="workout-date">${new Date(w.date).toLocaleDateString()}</div>
+        <div class="workout-name">
+          ${w.name} 
+          <svg class="toggle-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="workout-stats">
+          <div class="stat"><div class="stat-val">${totalSets}</div><div class="stat-lbl">Series</div></div>
+          <div class="stat"><div class="stat-val">${Math.round(totalVol)}kg</div><div class="stat-lbl">Volumen</div></div>
+          <div class="stat"><div class="stat-val">${w.duration}</div><div class="stat-lbl">Tiempo</div></div>
+        </div>
+        <div class="ex-chips">${w.exercises.map(e => `<span class="ex-chip">${e.name}</span>`).join('')}</div>
+        <div class="workout-details">${detailsHTML}</div>
+      </div>
+    </div>`;
+}
+
+function toggleDetails(id) {
+  document.getElementById('card-' + id).classList.toggle('expanded');
+}
+
+function renderHome() {
+  const banner = document.getElementById('wip-banner');
+  const startBtn = document.getElementById('start-btn');
+  if(state.currentWorkout) {
+    banner.style.display = 'block';
+    banner.innerHTML = `<div class="card" style="border-color:var(--accent); background:rgba(232,255,60,0.05);">
+      <div style="font-weight:600; color:var(--accent)">Entreno en curso</div>
+      <div style="font-size:13px; margin:4px 0 12px">${state.currentWorkout.name}</div>
+      <button class="btn btn-primary btn-sm" onclick="goTo('workout')">Continuar</button>
+    </div>`;
+    startBtn.style.display = 'none';
+  } else {
+    banner.style.display = 'none';
+    startBtn.style.display = 'block';
+  }
+  const recent = state.workouts.slice(-3).reverse();
+  document.getElementById('recent-list').innerHTML = recent.map(w => workoutCardHTML(w)).join('') || '<div class="empty-text">Sin historial.</div>';
+}
+
+function showStartModal() {
+  const sec = document.getElementById('start-templates-section');
+  sec.innerHTML = `<label>Tus Splits</label>` + state.templates.map(t => `
+    <button class="btn btn-ghost btn-full" style="margin-bottom:8px; justify-content:space-between" onclick="startFromTemplate('${t.id}')">
+      ${t.name} <span>→</span>
+    </button>`).join('');
+  openModal('modal-start');
+}
+
+function startFromTemplate(id) {
+  const t = state.templates.find(t => t.id === id);
+  state.currentWorkout = {
+    id: Date.now().toString(), name: t.name, date: new Date().toISOString(),
+    exercises: t.exercises.map(e => ({
+      name: e.name, sets: Array.from({length:e.sets}, () => ({weight:'', reps:'', done:false}))
+    }))
+  };
+  state.timerSeconds = 0;
+  closeModal('modal-start');
+  startTimer();
+  goTo('workout');
+}
+
+function startWorkoutBlank() {
+  const name = document.getElementById('workout-name-input').value || 'Entreno Libre';
+  state.currentWorkout = { id: Date.now().toString(), name, date: new Date().toISOString(), exercises: [] };
+  state.timerSeconds = 0;
+  closeModal('modal-start');
+  startTimer();
+  goTo('workout');
+}
+
+function renderWorkoutPage() {
+  const container = document.getElementById('workout-exercises');
+  if(!state.currentWorkout) { container.innerHTML = '<div class="empty-text">Pulsa Inicio para empezar.</div>'; return; }
+  
+  container.innerHTML = state.currentWorkout.exercises.map((ex, ei) => `
+    <div class="ex-block">
+      <div class="ex-header">
+        <div class="ex-name">${ex.name}</div>
+        <div style="display:flex; gap:6px;">
+          <button class="btn btn-ghost btn-sm btn-icon" title="Cargar pesos de la última vez" onclick="loadPreviousWeights(${ei})">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+          </button>
+          <button class="btn btn-ghost btn-sm" onclick="addSet(${ei})">+ Serie</button>
+        </div>
+      </div>
+      <div class="ex-body">
+        <div class="set-labels"><span></span><span>KG</span><span>REPS</span><span></span></div>
+        ${ex.sets.map((s, si) => `
+          <div class="set-row">
+            <div class="set-num">${si+1}</div>
+            <input class="set-input" type="number" value="${s.weight}" oninput="updateSet(${ei},${si},'weight',this.value)">
+            <input class="set-input" type="number" value="${s.reps}" oninput="updateSet(${ei},${si},'reps',this.value)">
+            <button class="set-done ${s.done?'checked':''}" onclick="toggleSet(${ei},${si})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20,6 9,17 4,12"/></svg>
+            </button>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// BÚSQUEDA PROFUNDA EN EL HISTORIAL
+function loadPreviousWeights(ei) {
+  const currentExName = state.currentWorkout.exercises[ei].name.toLowerCase().trim();
+  
+  // Recorremos TODO el historial de sesiones (de la más reciente a la más antigua)
+  for (let i = state.workouts.length - 1; i >= 0; i--) {
+    const pastWorkout = state.workouts[i];
+    
+    // Buscamos si en esa sesión pasada existe este ejercicio con el mismo nombre
+    const prevEx = pastWorkout.exercises.find(e => e.name.toLowerCase().trim() === currentExName);
+    
+    if (prevEx && prevEx.sets.length > 0) {
+      // Encontramos la última vez que se hizo. Copiamos exactamente esas series 
+      // y reseteamos el 'done' a false para que lo marques hoy.
+      state.currentWorkout.exercises[ei].sets = prevEx.sets.map(s => ({
+        weight: s.weight,
+        reps: s.reps,
+        done: false
+      }));
+      renderWorkoutPage();
+      return; // Detenemos la búsqueda al encontrar la coincidencia más reciente
+    }
+  }
+  
+  // Si termina el bucle y no encuentra nada
+  alert(`No se ha encontrado ninguna sesión anterior en tu historial donde hicieras "${state.currentWorkout.exercises[ei].name}". Asegúrate de que el nombre coincide exactamente.`);
+}
+
+function updateSet(ei, si, field, val) { state.currentWorkout.exercises[ei].sets[si][field] = val; }
+function toggleSet(ei, si) { state.currentWorkout.exercises[ei].sets[si].done = !state.currentWorkout.exercises[ei].sets[si].done; renderWorkoutPage(); }
+function addSet(ei) { state.currentWorkout.exercises[ei].sets.push({weight:'', reps:'', done:false}); renderWorkoutPage(); }
+
+function addExerciseToWorkout() {
+  const name = prompt("Nombre del ejercicio:");
+  if(name) {
+    state.currentWorkout.exercises.push({name, sets:[{weight:'', reps:'', done:false}]});
+    renderWorkoutPage();
+  }
+}
+
+function startTimer() {
+  document.getElementById('timer-bar').style.display = 'flex';
+  if(state.timerInterval) clearInterval(state.timerInterval);
+  state.timerInterval = setInterval(() => {
+    state.timerSeconds++;
+    document.getElementById('timer-display').innerText = formatDuration(state.timerSeconds);
+  }, 1000);
+}
+
+function finishWorkout() {
+  clearInterval(state.timerInterval);
+  const totalVol = state.currentWorkout.exercises.reduce((a, ex) => a + ex.sets.filter(s=>s.done).reduce((b,s) => b+(parseFloat(s.weight)||0)*(parseInt(s.reps)||0), 0), 0);
+  document.getElementById('summary-content').innerHTML = `
+    <div class="stat-val" style="font-size:40px">${Math.round(totalVol)}kg</div>
+    <div class="stat-lbl">Volumen total levantado</div>
+    <div style="margin-top:10px; color:var(--muted)">Tiempo: ${formatDuration(state.timerSeconds)}</div>
+  `;
+  openModal('modal-summary');
+}
+
+function continueEditing() {
+  closeModal('modal-summary');
+  startTimer();
+}
+
+function saveWorkout() {
+  state.currentWorkout.duration = formatDuration(state.timerSeconds);
+  state.workouts.push(state.currentWorkout);
+  localStorage.setItem('ironlog_workouts', JSON.stringify(state.workouts));
+  state.currentWorkout = null;
+  state.timerSeconds = 0;
+  document.getElementById('timer-bar').style.display = 'none';
+  closeModal('modal-summary');
+  goTo('home');
+}
+
+function discardWorkout() {
+  if(!confirm("¿Descartar entreno? Se perderán los datos.")) return;
+  state.currentWorkout = null;
+  state.timerSeconds = 0;
+  document.getElementById('timer-bar').style.display = 'none';
+  closeModal('modal-summary');
+  goTo('home');
+}
+
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  list.innerHTML = [...state.workouts].reverse().map(w => workoutCardHTML(w)).join('') || '<div class="empty-text">Sin historial.</div>';
+}
+
+function deleteWorkout(id) {
+  if(confirm("¿Eliminar registro?")) {
+    state.workouts = state.workouts.filter(w => w.id !== id);
+    localStorage.setItem('ironlog_workouts', JSON.stringify(state.workouts));
+    renderHistory();
+  }
+}
+
+function renderTemplates() {
+  const list = document.getElementById('templates-list');
+  list.innerHTML = state.templates.map(t => `
+    <div class="card">
+      <div style="font-family:'Bebas Neue'; font-size:20px; color:var(--accent)">${t.name}</div>
+      <div style="font-size:12px; color:var(--muted); margin-bottom:12px">${t.exercises.length} ejercicios</div>
+      <button class="btn btn-primary btn-sm btn-full" onclick="startFromTemplate('${t.id}')">Empezar</button>
+      <button class="btn btn-ghost btn-sm btn-full" style="margin-top:8px" onclick="deleteTemplate('${t.id}')">Eliminar</button>
+    </div>`).join('') || '<div class="empty-text">Crea un split para empezar rápido.</div>';
+}
+
+function showTemplateModal() {
+  document.getElementById('template-ex-fields').innerHTML = '';
+  document.getElementById('template-name-input').value = '';
+  addTemplateExField();
+  openModal('modal-template');
+}
+
+function addTemplateExField() {
+  const div = document.createElement('div');
+  div.className = 'field';
+  div.innerHTML = `<input type="text" placeholder="Ejercicio" class="t-ex-name"><input type="number" placeholder="Series" class="t-ex-sets" style="width:80px; margin-top:5px">`;
+  document.getElementById('template-ex-fields').appendChild(div);
+}
+
+function saveTemplate() {
+  const name = document.getElementById('template-name-input').value;
+  const names = document.querySelectorAll('.t-ex-name');
+  const sets = document.querySelectorAll('.t-ex-sets');
+  const exercises = [];
+  names.forEach((n, i) => { if(n.value) exercises.push({name: n.value, sets: parseInt(sets[i].value) || 3}); });
+  if(name && exercises.length) {
+    state.templates.push({id: Date.now().toString(), name, exercises});
+    localStorage.setItem('ironlog_templates', JSON.stringify(state.templates));
+    closeModal('modal-template');
+    renderTemplates();
+  }
+}
+
+function deleteTemplate(id) {
+  state.templates = state.templates.filter(t => t.id !== id);
+  localStorage.setItem('ironlog_templates', JSON.stringify(state.templates));
+  renderTemplates();
+}
+
+function renderProgress() {
+  const sel = document.getElementById('progress-exercise-select');
+  const exs = [...new Set(state.workouts.flatMap(w => w.exercises.map(e => e.name)))];
+  sel.innerHTML = exs.map(e => `<option value="${e}">${e}</option>`).join('');
+  renderProgressChart();
+}
+
+function renderProgressChart() {
+  const exName = document.getElementById('progress-exercise-select').value;
+  const canvas = document.getElementById('progress-chart');
+  if(!exName) return;
+  
+  const data = state.workouts.map(w => {
+    const ex = w.exercises.find(e => e.name === exName);
+    if(!ex) return null;
+    const max = Math.max(...ex.sets.filter(s=>s.done).map(s => parseFloat(s.weight) || 0));
+    return max > 0 ? {date: new Date(w.date).toLocaleDateString(), weight: max} : null;
+  }).filter(d => d !== null);
+
+  if(state.progressChart) state.progressChart.destroy();
+  state.progressChart = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: data.map(d => d.date),
+      datasets: [{
+        label: 'Max Peso (kg)',
+        data: data.map(d => d.weight),
+        borderColor: '#e8ff3c',
+        tension: 0.3,
+        fill: true,
+        backgroundColor: 'rgba(232,255,60,0.1)'
+      }]
+    },
+    options: { scales: { y: { beginAtZero: false, grid:{color:'#222'} }, x: { grid:{display:false} } }, plugins:{legend:{display:false}} }
+  });
+}
+
+function formatDuration(s) { 
+  const m = Math.floor(s/60); const rs = s%60; return `${m}:${rs.toString().padStart(2,'0')}`; 
+}
+
+renderHome();
+</script>
+</body>
+</html>
