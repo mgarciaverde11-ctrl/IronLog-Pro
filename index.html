@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="IRONLOG">
-<title>IRONLOG</title>
+<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2964/2964514.png"> <title>IRONLOG</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
@@ -60,11 +60,11 @@
     z-index: 100; 
   }
   
-  /* ... resto de estilos iguales ... */
   .nav-btn { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; background:none; border:none; color:var(--muted); cursor:pointer; padding:4px; transition:color .2s; }
   .nav-btn.active { color:var(--accent); }
   .nav-btn svg { width:22px; height:22px; }
   .nav-btn span { font-size:10px; letter-spacing:.5px; }
+
   .page { display:none; padding:20px; }
   .page.active { display:block; }
   .sec-title { font-family:'Bebas Neue', sans-serif; font-size:22px; letter-spacing:2px; color:var(--accent); margin-bottom:16px; }
@@ -76,9 +76,11 @@
   .btn-full { width:100%; }
   .btn-sm { padding:8px 14px; font-size:13px; border-radius:8px; }
   .btn-icon { padding:8px 10px; }
+
   input, select { background:var(--bg3); border:1px solid var(--border); border-radius:10px; color:var(--text); font-family:'DM Sans', sans-serif; font-size:14px; padding:12px 14px; width:100%; outline:none; }
   label { font-size:12px; color:var(--muted); letter-spacing:.5px; display:block; margin-bottom:6px; text-transform:uppercase; }
   .field { margin-bottom:14px; }
+
   .ex-block { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:12px; overflow:hidden; }
   .ex-header { padding:14px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); }
   .ex-name { font-weight:600; font-size:15px; }
@@ -92,8 +94,10 @@
   .set-done svg { width:18px; height:18px; stroke:var(--muted); }
   .set-labels { display:grid; grid-template-columns:32px 1fr 1fr 40px; gap:8px; margin-bottom:6px; }
   .set-labels span { font-size:10px; color:var(--muted); text-align:center; text-transform:uppercase; letter-spacing:.5px; }
+  
   .timer-bar { background:var(--bg2); border-bottom:1px solid var(--border); padding:10px 20px; display:flex; align-items:center; gap:12px; }
   .timer-display { font-family:'Bebas Neue', sans-serif; font-size:28px; color:var(--accent); letter-spacing:2px; min-width:80px; }
+  
   .workout-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px; position:relative; }
   .workout-date { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
   .workout-name { font-family:'Bebas Neue', sans-serif; font-size:20px; color:var(--text); letter-spacing:1px; margin-bottom:8px; }
@@ -101,6 +105,7 @@
   .stat { text-align:center; }
   .stat-val { font-family:'Bebas Neue', sans-serif; font-size:20px; color:var(--accent); }
   .stat-lbl { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  
   .workout-details { display: none; margin-top: 14px; border-top: 1px solid var(--border); padding-top: 12px; animation: fadeIn 0.3s; }
   .workout-card.expanded .workout-details { display: block; }
   .toggle-icon { transition: transform 0.2s; margin-left: 6px; vertical-align: middle; }
@@ -109,12 +114,15 @@
   .det-set { font-size: 13px; display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed var(--bg3); }
   .ex-chips { display:flex; flex-wrap:wrap; gap:6px; }
   .ex-chip { background:var(--bg3); border:1px solid var(--border); border-radius:6px; padding:4px 10px; font-size:11px; color:var(--muted); }
+
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.8); z-index:200; display:flex; align-items:flex-end; opacity:0; pointer-events:none; transition:opacity .2s; }
   .modal-overlay.open { opacity:1; pointer-events:all; }
   .modal { background:var(--bg2); border-radius:20px 20px 0 0; border-top:1px solid var(--border); padding:24px 20px calc(24px + var(--safe-bottom)); width:100%; max-height:90dvh; overflow-y:auto; transform:translateY(100%); transition:transform .3s cubic-bezier(.32,1.25,.55,1); }
   .modal-overlay.open .modal { transform:translateY(0); }
   .modal-handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
+
   .big-btn { width:100%; padding:18px; background:var(--accent); color:#000; border:none; border-radius:var(--radius); font-family:'Bebas Neue', sans-serif; font-size:22px; letter-spacing:3px; cursor:pointer; }
+  
   @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
   .delete-btn { position:absolute; top:12px; right:12px; background:none; border:none; color:var(--muted2); cursor:pointer; z-index: 10; }
 </style>
@@ -397,12 +405,10 @@ function loadPreviousWeights(ei) {
         done: false
       }));
       renderWorkoutPage();
-      return; // Detenemos la búsqueda al encontrar la coincidencia más reciente
+      return; 
     }
   }
-  
-  // Si termina el bucle y no encuentra nada
-  alert(`No se ha encontrado ninguna sesión anterior en tu historial donde hicieras "${state.currentWorkout.exercises[ei].name}". Asegúrate de que el nombre coincide exactamente.`);
+  alert(`No se ha encontrado ninguna sesión anterior en tu historial donde hicieras "${state.currentWorkout.exercises[ei].name}".`);
 }
 
 function updateSet(ei, si, field, val) { state.currentWorkout.exercises[ei].sets[si][field] = val; }
@@ -535,8 +541,13 @@ function renderProgressChart() {
   const data = state.workouts.map(w => {
     const ex = w.exercises.find(e => e.name === exName);
     if(!ex) return null;
-    const max = Math.max(...ex.sets.filter(s=>s.done).map(s => parseFloat(s.weight) || 0));
-    return max > 0 ? {date: new Date(w.date).toLocaleDateString(), weight: max} : null;
+    
+    // Calculamos el Volumen Total: Suma de (peso * reps) de todas las series marcadas como hechas
+    const totalVolume = ex.sets
+      .filter(s => s.done)
+      .reduce((acc, s) => acc + (parseFloat(s.weight || 0) * parseInt(s.reps || 0)), 0);
+      
+    return totalVolume > 0 ? {date: new Date(w.date).toLocaleDateString(), volume: totalVolume} : null;
   }).filter(d => d !== null);
 
   if(state.progressChart) state.progressChart.destroy();
@@ -545,15 +556,33 @@ function renderProgressChart() {
     data: {
       labels: data.map(d => d.date),
       datasets: [{
-        label: 'Max Peso (kg)',
-        data: data.map(d => d.weight),
+        label: 'Volumen Total (kg)',
+        data: data.map(d => d.volume),
         borderColor: '#e8ff3c',
         tension: 0.3,
         fill: true,
-        backgroundColor: 'rgba(232,255,60,0.1)'
+        backgroundColor: 'rgba(232,255,60,0.1)',
+        pointBackgroundColor: '#e8ff3c'
       }]
     },
-    options: { scales: { y: { beginAtZero: false, grid:{color:'#222'} }, x: { grid:{display:false} } }, plugins:{legend:{display:false}} }
+    options: { 
+      scales: { 
+        y: { 
+          beginAtZero: false, 
+          grid:{color:'#222'},
+          title: { display: true, text: 'KG Acumulados', color: '#666', font: { size: 10 } }
+        }, 
+        x: { grid:{display:false} } 
+      }, 
+      plugins:{
+        legend:{display:false},
+        tooltip: {
+          callbacks: {
+            label: (context) => ` Volumen: ${context.raw} kg`
+          }
+        }
+      } 
+    }
   });
 }
 
