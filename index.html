@@ -6,7 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="IRONLOG">
-<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2964/2964514.png"> <title>IRONLOG</title>
+<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2964/2964514.png">
+<title>IRONLOG</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
@@ -16,7 +17,6 @@
     --accent: #e8ff3c; --accent2: #ff3c3c;
     --text: #f0f0f0; --muted: #666; --muted2: #444;
     --radius: 14px; 
-    /* Áreas seguras para iPhone (Notch y barra inferior) */
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
@@ -24,7 +24,6 @@
   html, body { height:100%; background:var(--bg); color:var(--text); font-family:'DM Sans', sans-serif; overflow:hidden; }
   #app { display:flex; flex-direction:column; height:100dvh; }
 
-  /* Ajuste del Header para el Notch */
   #header { 
     padding: calc(var(--safe-top) + 10px) 20px 12px; 
     background: var(--bg); 
@@ -34,11 +33,9 @@
     align-items: center; 
     justify-content: space-between; 
   }
-  
   #header h1 { font-family:'Bebas Neue', sans-serif; font-size:28px; letter-spacing:3px; color:var(--accent); }
   #header .subtitle { font-size:11px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-top:1px; }
 
-  /* Ajuste del contenido para que no se pegue abajo */
   #content { 
     flex:1; 
     overflow-y:auto; 
@@ -47,7 +44,6 @@
     padding-bottom: calc(80px + var(--safe-bottom)); 
   }
   
-  /* Ajuste de la barra de navegación inferior */
   #nav { 
     position:fixed; 
     bottom:0; left:0; right:0; 
@@ -75,11 +71,9 @@
   .btn-ghost { background:var(--bg3); color:var(--text); border:1px solid var(--border); }
   .btn-full { width:100%; }
   .btn-sm { padding:8px 14px; font-size:13px; border-radius:8px; }
-  .btn-icon { padding:8px 10px; }
 
   input, select { background:var(--bg3); border:1px solid var(--border); border-radius:10px; color:var(--text); font-family:'DM Sans', sans-serif; font-size:14px; padding:12px 14px; width:100%; outline:none; }
   label { font-size:12px; color:var(--muted); letter-spacing:.5px; display:block; margin-bottom:6px; text-transform:uppercase; }
-  .field { margin-bottom:14px; }
 
   .ex-block { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:12px; overflow:hidden; }
   .ex-header { padding:14px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); }
@@ -92,8 +86,6 @@
   .set-done.checked { background:var(--accent); border-color:var(--accent); }
   .set-done.checked svg { stroke:#000; }
   .set-done svg { width:18px; height:18px; stroke:var(--muted); }
-  .set-labels { display:grid; grid-template-columns:32px 1fr 1fr 40px; gap:8px; margin-bottom:6px; }
-  .set-labels span { font-size:10px; color:var(--muted); text-align:center; text-transform:uppercase; letter-spacing:.5px; }
   
   .timer-bar { background:var(--bg2); border-bottom:1px solid var(--border); padding:10px 20px; display:flex; align-items:center; gap:12px; }
   .timer-display { font-family:'Bebas Neue', sans-serif; font-size:28px; color:var(--accent); letter-spacing:2px; min-width:80px; }
@@ -112,8 +104,6 @@
   .workout-card.expanded .toggle-icon { transform: rotate(180deg); }
   .det-ex-name { font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--accent); letter-spacing: 1px; margin-top: 10px; }
   .det-set { font-size: 13px; display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed var(--bg3); }
-  .ex-chips { display:flex; flex-wrap:wrap; gap:6px; }
-  .ex-chip { background:var(--bg3); border:1px solid var(--border); border-radius:6px; padding:4px 10px; font-size:11px; color:var(--muted); }
 
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.8); z-index:200; display:flex; align-items:flex-end; opacity:0; pointer-events:none; transition:opacity .2s; }
   .modal-overlay.open { opacity:1; pointer-events:all; }
@@ -122,9 +112,8 @@
   .modal-handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
 
   .big-btn { width:100%; padding:18px; background:var(--accent); color:#000; border:none; border-radius:var(--radius); font-family:'Bebas Neue', sans-serif; font-size:22px; letter-spacing:3px; cursor:pointer; }
-  
   @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
-  .delete-btn { position:absolute; top:12px; right:12px; background:none; border:none; color:var(--muted2); cursor:pointer; z-index: 10; }
+  .delete-btn { position:absolute; top:12px; right:12px; background:none; border:none; color:var(--muted2); cursor:pointer; z-index: 10; font-size: 20px; }
 </style>
 </head>
 <body>
@@ -178,7 +167,6 @@
         <select id="progress-exercise-select" onchange="renderProgressChart()"></select>
       </div>
       <div class="card"><canvas id="progress-chart" style="max-height:200px"></canvas></div>
-      <div id="progress-stats"></div>
     </div>
   </div>
 
@@ -224,19 +212,19 @@
     <div class="modal-handle"></div>
     <div class="sec-title">Resumen de sesión</div>
     <div id="summary-content"></div>
-    <button class="btn btn-primary btn-full" onclick="saveWorkout()" style="margin-top:20px">GUARDAR EN EL DIARIO</button>
-    <button class="btn btn-ghost btn-full" onclick="continueEditing()" style="margin-top:10px; color:var(--accent)">EDITAR SESIÓN</button>
-    <button class="btn btn-ghost btn-full" onclick="discardWorkout()" style="margin-top:10px; color:var(--accent2)">Descartar</button>
+    <button class="btn btn-primary btn-full" onclick="saveWorkout()" style="margin-top:20px">GUARDAR</button>
+    <button class="btn btn-ghost btn-full" onclick="continueEditing()" style="margin-top:10px; color:var(--accent)">EDITAR</button>
+    <button class="btn btn-ghost btn-full" onclick="discardWorkout()" style="margin-top:10px; color:var(--accent2)">DESCARTAR</button>
   </div>
 </div>
 
 <div class="modal-overlay" id="modal-template">
   <div class="modal">
     <div class="modal-handle"></div>
-    <div class="sec-title" id="template-modal-title">Split Nuevo</div>
-    <input type="text" id="template-name-input" placeholder="Ej: Push Day">
+    <div class="sec-title">Split Nuevo</div>
+    <input type="text" id="template-name-input" placeholder="Ej: Empuje">
     <div id="template-ex-fields" style="margin-top:15px"></div>
-    <button class="btn btn-ghost btn-full" onclick="addTemplateExField()">+ Añadir Ejercicio</button>
+    <button class="btn btn-ghost btn-full" onclick="addTemplateExField()">+ Ejercicio</button>
     <button class="btn btn-primary btn-full" onclick="saveTemplate()" style="margin-top:20px">GUARDAR SPLIT</button>
   </div>
 </div>
@@ -294,7 +282,6 @@ function workoutCardHTML(w) {
           <div class="stat"><div class="stat-val">${Math.round(totalVol)}kg</div><div class="stat-lbl">Volumen</div></div>
           <div class="stat"><div class="stat-val">${w.duration}</div><div class="stat-lbl">Tiempo</div></div>
         </div>
-        <div class="ex-chips">${w.exercises.map(e => `<span class="ex-chip">${e.name}</span>`).join('')}</div>
         <div class="workout-details">${detailsHTML}</div>
       </div>
     </div>`;
@@ -311,8 +298,7 @@ function renderHome() {
     banner.style.display = 'block';
     banner.innerHTML = `<div class="card" style="border-color:var(--accent); background:rgba(232,255,60,0.05);">
       <div style="font-weight:600; color:var(--accent)">Entreno en curso</div>
-      <div style="font-size:13px; margin:4px 0 12px">${state.currentWorkout.name}</div>
-      <button class="btn btn-primary btn-sm" onclick="goTo('workout')">Continuar</button>
+      <button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="goTo('workout')">Continuar</button>
     </div>`;
     startBtn.style.display = 'none';
   } else {
@@ -320,7 +306,12 @@ function renderHome() {
     startBtn.style.display = 'block';
   }
   const recent = state.workouts.slice(-3).reverse();
-  document.getElementById('recent-list').innerHTML = recent.map(w => workoutCardHTML(w)).join('') || '<div class="empty-text">Sin historial.</div>';
+  document.getElementById('recent-list').innerHTML = recent.map(w => workoutCardHTML(w)).join('') || '<div class="empty-text">Sin entrenos recientes.</div>';
+}
+
+function renderHistory() {
+  const list = document.getElementById('history-list');
+  list.innerHTML = [...state.workouts].reverse().map(w => workoutCardHTML(w)).join('') || '<div class="empty-text">Historial vacío.</div>';
 }
 
 function showStartModal() {
@@ -364,19 +355,18 @@ function renderWorkoutPage() {
       <div class="ex-header">
         <div class="ex-name">${ex.name}</div>
         <div style="display:flex; gap:6px;">
-          <button class="btn btn-ghost btn-sm btn-icon" title="Cargar pesos de la última vez" onclick="loadPreviousWeights(${ei})">
+          <button class="btn btn-ghost btn-sm btn-icon" onclick="loadPreviousWeights(${ei})">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
           </button>
           <button class="btn btn-ghost btn-sm" onclick="addSet(${ei})">+ Serie</button>
         </div>
       </div>
       <div class="ex-body">
-        <div class="set-labels"><span></span><span>KG</span><span>REPS</span><span></span></div>
         ${ex.sets.map((s, si) => `
           <div class="set-row">
             <div class="set-num">${si+1}</div>
-            <input class="set-input" type="number" value="${s.weight}" oninput="updateSet(${ei},${si},'weight',this.value)">
-            <input class="set-input" type="number" value="${s.reps}" oninput="updateSet(${ei},${si},'reps',this.value)">
+            <input class="set-input" type="number" value="${s.weight}" oninput="updateSet(${ei},${si},'weight',this.value)" placeholder="kg">
+            <input class="set-input" type="number" value="${s.reps}" oninput="updateSet(${ei},${si},'reps',this.value)" placeholder="reps">
             <button class="set-done ${s.done?'checked':''}" onclick="toggleSet(${ei},${si})">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20,6 9,17 4,12"/></svg>
             </button>
@@ -385,30 +375,16 @@ function renderWorkoutPage() {
     </div>`).join('');
 }
 
-// BÚSQUEDA PROFUNDA EN EL HISTORIAL
 function loadPreviousWeights(ei) {
-  const currentExName = state.currentWorkout.exercises[ei].name.toLowerCase().trim();
-  
-  // Recorremos TODO el historial de sesiones (de la más reciente a la más antigua)
+  const name = state.currentWorkout.exercises[ei].name.toLowerCase().trim();
   for (let i = state.workouts.length - 1; i >= 0; i--) {
-    const pastWorkout = state.workouts[i];
-    
-    // Buscamos si en esa sesión pasada existe este ejercicio con el mismo nombre
-    const prevEx = pastWorkout.exercises.find(e => e.name.toLowerCase().trim() === currentExName);
-    
-    if (prevEx && prevEx.sets.length > 0) {
-      // Encontramos la última vez que se hizo. Copiamos exactamente esas series 
-      // y reseteamos el 'done' a false para que lo marques hoy.
-      state.currentWorkout.exercises[ei].sets = prevEx.sets.map(s => ({
-        weight: s.weight,
-        reps: s.reps,
-        done: false
-      }));
+    const prevEx = state.workouts[i].exercises.find(e => e.name.toLowerCase().trim() === name);
+    if (prevEx) {
+      state.currentWorkout.exercises[ei].sets = prevEx.sets.map(s => ({ weight: s.weight, reps: s.reps, done: false }));
       renderWorkoutPage();
-      return; 
+      return;
     }
   }
-  alert(`No se ha encontrado ninguna sesión anterior en tu historial donde hicieras "${state.currentWorkout.exercises[ei].name}".`);
 }
 
 function updateSet(ei, si, field, val) { state.currentWorkout.exercises[ei].sets[si][field] = val; }
@@ -416,11 +392,8 @@ function toggleSet(ei, si) { state.currentWorkout.exercises[ei].sets[si].done = 
 function addSet(ei) { state.currentWorkout.exercises[ei].sets.push({weight:'', reps:'', done:false}); renderWorkoutPage(); }
 
 function addExerciseToWorkout() {
-  const name = prompt("Nombre del ejercicio:");
-  if(name) {
-    state.currentWorkout.exercises.push({name, sets:[{weight:'', reps:'', done:false}]});
-    renderWorkoutPage();
-  }
+  const name = prompt("Ejercicio:");
+  if(name) { state.currentWorkout.exercises.push({name, sets:[{weight:'', reps:'', done:false}]}); renderWorkoutPage(); }
 }
 
 function startTimer() {
@@ -443,41 +416,33 @@ function finishWorkout() {
   openModal('modal-summary');
 }
 
-function continueEditing() {
-  closeModal('modal-summary');
-  startTimer();
-}
+function continueEditing() { closeModal('modal-summary'); startTimer(); }
 
 function saveWorkout() {
   state.currentWorkout.duration = formatDuration(state.timerSeconds);
   state.workouts.push(state.currentWorkout);
   localStorage.setItem('ironlog_workouts', JSON.stringify(state.workouts));
   state.currentWorkout = null;
-  state.timerSeconds = 0;
   document.getElementById('timer-bar').style.display = 'none';
   closeModal('modal-summary');
   goTo('home');
 }
 
 function discardWorkout() {
-  if(!confirm("¿Descartar entreno? Se perderán los datos.")) return;
-  state.currentWorkout = null;
-  state.timerSeconds = 0;
-  document.getElementById('timer-bar').style.display = 'none';
-  closeModal('modal-summary');
-  goTo('home');
-}
-
-function renderHistory() {
-  const list = document.getElementById('history-list');
-  list.innerHTML = [...state.workouts].reverse().map(w => workoutCardHTML(w)).join('') || '<div class="empty-text">Sin historial.</div>';
+  if(confirm("¿Descartar?")) {
+    state.currentWorkout = null;
+    document.getElementById('timer-bar').style.display = 'none';
+    closeModal('modal-summary');
+    goTo('home');
+  }
 }
 
 function deleteWorkout(id) {
-  if(confirm("¿Eliminar registro?")) {
+  if(confirm("¿Eliminar?")) {
     state.workouts = state.workouts.filter(w => w.id !== id);
     localStorage.setItem('ironlog_workouts', JSON.stringify(state.workouts));
     renderHistory();
+    renderHome();
   }
 }
 
@@ -489,7 +454,7 @@ function renderTemplates() {
       <div style="font-size:12px; color:var(--muted); margin-bottom:12px">${t.exercises.length} ejercicios</div>
       <button class="btn btn-primary btn-sm btn-full" onclick="startFromTemplate('${t.id}')">Empezar</button>
       <button class="btn btn-ghost btn-sm btn-full" style="margin-top:8px" onclick="deleteTemplate('${t.id}')">Eliminar</button>
-    </div>`).join('') || '<div class="empty-text">Crea un split para empezar rápido.</div>';
+    </div>`).join('') || '<div class="empty-text">Crea un split.</div>';
 }
 
 function showTemplateModal() {
@@ -537,17 +502,11 @@ function renderProgressChart() {
   const exName = document.getElementById('progress-exercise-select').value;
   const canvas = document.getElementById('progress-chart');
   if(!exName) return;
-  
   const data = state.workouts.map(w => {
     const ex = w.exercises.find(e => e.name === exName);
     if(!ex) return null;
-    
-    // Calculamos el Volumen Total: Suma de (peso * reps) de todas las series marcadas como hechas
-    const totalVolume = ex.sets
-      .filter(s => s.done)
-      .reduce((acc, s) => acc + (parseFloat(s.weight || 0) * parseInt(s.reps || 0)), 0);
-      
-    return totalVolume > 0 ? {date: new Date(w.date).toLocaleDateString(), volume: totalVolume} : null;
+    const vol = ex.sets.filter(s => s.done).reduce((acc, s) => acc + (parseFloat(s.weight || 0) * parseInt(s.reps || 0)), 0);
+    return vol > 0 ? {date: new Date(w.date).toLocaleDateString(), volume: vol} : null;
   }).filter(d => d !== null);
 
   if(state.progressChart) state.progressChart.destroy();
@@ -556,33 +515,15 @@ function renderProgressChart() {
     data: {
       labels: data.map(d => d.date),
       datasets: [{
-        label: 'Volumen Total (kg)',
+        label: 'Volumen',
         data: data.map(d => d.volume),
         borderColor: '#e8ff3c',
         tension: 0.3,
         fill: true,
-        backgroundColor: 'rgba(232,255,60,0.1)',
-        pointBackgroundColor: '#e8ff3c'
+        backgroundColor: 'rgba(232,255,60,0.1)'
       }]
     },
-    options: { 
-      scales: { 
-        y: { 
-          beginAtZero: false, 
-          grid:{color:'#222'},
-          title: { display: true, text: 'KG Acumulados', color: '#666', font: { size: 10 } }
-        }, 
-        x: { grid:{display:false} } 
-      }, 
-      plugins:{
-        legend:{display:false},
-        tooltip: {
-          callbacks: {
-            label: (context) => ` Volumen: ${context.raw} kg`
-          }
-        }
-      } 
-    }
+    options: { scales: { y: { beginAtZero: false, grid:{color:'#222'} }, x: { grid:{display:false} } }, plugins:{legend:{display:false}} }
   });
 }
 
