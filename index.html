@@ -155,7 +155,6 @@
   </div>
 
   <div id="content">
-    <!-- HOME -->
     <div id="page-home" class="page active">
       <div id="active-workout-banner"></div>
       <button class="btn btn-primary btn-full" style="height:60px;font-size:18px;letter-spacing:2px;font-family:'Bebas Neue',sans-serif" onclick="showStartModal()">+ NUEVO ENTRENO</button>
@@ -164,20 +163,17 @@
       <div id="recent-list"></div>
     </div>
 
-    <!-- WORKOUT -->
     <div id="page-workout" class="page">
       <div id="workout-header-edit" style="margin-bottom:15px"></div>
       <div id="workout-exercises"></div>
       <button class="btn btn-ghost btn-full" onclick="addExercisePrompt()" style="margin-bottom:0">+ Añadir Ejercicio</button>
     </div>
 
-    <!-- HISTORY -->
     <div id="page-history" class="page">
       <div class="sec-title">Historial</div>
       <div id="history-list"></div>
     </div>
 
-    <!-- SPLITS -->
     <div id="page-templates" class="page">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
         <div class="sec-title" style="margin:0">Mis Splits</div>
@@ -186,7 +182,6 @@
       <div id="templates-list"></div>
     </div>
 
-    <!-- PROGRESS -->
     <div id="page-progress" class="page">
       <div class="sec-title">Progreso</div>
       <div class="field" style="margin-bottom:12px">
@@ -223,10 +218,8 @@
   </nav>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- MODAL: Start -->
 <div class="modal-overlay" id="modal-start">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -241,7 +234,6 @@
   </div>
 </div>
 
-<!-- MODAL: Template -->
 <div class="modal-overlay" id="modal-template">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -260,7 +252,6 @@
   </div>
 </div>
 
-<!-- MODAL: Summary -->
 <div class="modal-overlay" id="modal-summary">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -274,23 +265,53 @@
 
 <script>
 // ============ MIGRATION ============
+// Cambiado quirúrgicamente para importar de 'ironlog_history' y 'ironlog_splits' del código antiguo v1.1.1 sin perder datos
 function migrateData() {
-  let raw = localStorage.getItem('ironlog_workouts');
-  if (!raw) return;
-  let data = JSON.parse(raw);
-  let changed = false;
-  data = data.map(w => {
-    if (!w.date || w.date === "Invalid Date") { w.date = new Date(parseInt(w.id)||Date.now()).toISOString(); changed=true; }
-    w.exercises = w.exercises.map(ex => {
-      ex.sets = ex.sets.map(s => {
-        if (s.weight !== undefined && s.wL === undefined) { s.wL=s.weight; s.rL=s.reps; s.wR=''; s.rR=''; changed=true; }
-        return s;
+  let oldHistory = localStorage.getItem('ironlog_history');
+  let newWorkouts = localStorage.getItem('ironlog_workouts');
+  
+  if (oldHistory && !newWorkouts) {
+    let data = JSON.parse(oldHistory);
+    let migrated = data.map(w => {
+      if (!w.date || w.date.includes('/') || w.date === "Invalid Date") {
+        w.date = new Date(parseInt(w.id) || Date.now()).toISOString();
+      }
+      w.exercises = (w.exercises || []).map(ex => {
+        let isUni = ex.isUnilateral || false;
+        ex.unilateral = isUni;
+        delete ex.isUnilateral;
+        ex.sets = (ex.sets || []).map(s => {
+          if (s.weight !== undefined && s.wL === undefined) {
+            s.wL = s.weight; s.rL = s.reps; s.wR = ''; s.rR = '';
+            delete s.weight; delete s.reps;
+          }
+          if (s.done === undefined) s.done = true; 
+          return s;
+        });
+        return ex;
       });
-      return ex;
+      return w;
     });
-    return w;
-  });
-  if (changed) { localStorage.setItem('ironlog_workouts', JSON.stringify(data)); }
+    localStorage.setItem('ironlog_workouts', JSON.stringify(migrated));
+  }
+
+  let oldSplits = localStorage.getItem('ironlog_splits');
+  let newTemplates = localStorage.getItem('ironlog_templates');
+  if (oldSplits && !newTemplates) {
+    let tpls = JSON.parse(oldSplits);
+    let migratedTpls = tpls.map(t => {
+      return {
+        id: t.id || Date.now().toString(),
+        name: t.name,
+        exercises: (t.exercises || []).map(ex => ({
+          name: ex.name,
+          unilateral: ex.isUnilateral || false,
+          setsCount: 3
+        }))
+      };
+    });
+    localStorage.setItem('ironlog_templates', JSON.stringify(migratedTpls));
+  }
 }
 migrateData();
 
@@ -301,7 +322,8 @@ let state = {
   current: JSON.parse(localStorage.getItem('ironlog_current') || 'null'),
   timerIdx: null,
   progressMetric: 'topset',
-  editingTemplateId: null
+  editingTemplateId: null,
+  chartInstance: null
 };
 
 // ============ INIT ============
@@ -421,7 +443,6 @@ function exportWorkout(id) {
   });
   text += `---\nGenerado por IRONLOG v1.2`;
   navigator.clipboard.writeText(text).then(() => showToast('✓ Copiado al portapapeles')).catch(() => {
-    // fallback
     const ta = document.createElement('textarea');
     ta.value = text; document.body.appendChild(ta); ta.select();
     document.execCommand('copy'); document.body.removeChild(ta);
@@ -510,7 +531,6 @@ function renderWorkoutPage() {
           </button>
         </div>`).join('');
 
-    // Micro-history
     const microId = `micro-${ei}`;
     const microHTML = buildMicroHistory(ex.name, isUni);
 
@@ -553,281 +573,313 @@ function buildMicroHistory(exName, isUni) {
     if (!doneSets.length) continue;
     sessions.push({ date: w.date, sets: doneSets, unilateral: ex.unilateral });
   }
-  if (!sessions.length) return `<div class="micro-h-title">Sin historial para este ejercicio</div>`;
+  if (!sessions.length) return `<div class="micro-h-title" style="padding:4px 0">Sin historial para este ejercicio</div>`;
 
-  const html = sessions.map(s => {
-    const dateStr = new Date(s.date).toLocaleDateString('es-ES',{day:'numeric',month:'short'});
-    const setsHTML = s.sets.map((set,i) => s.unilateral
-      ? `<div class="micro-h-set"><span>Serie ${i+1}</span><span>Izq ${set.wL||0}kg×${set.rL||0} · Der ${set.wR||0}kg×${set.rR||0}</span></div>`
-      : `<div class="micro-h-set"><span>Serie ${i+1}</span><span>${set.wL||0}kg × ${set.rL||0}</span></div>`).join('');
-    return `<div class="micro-h-session"><div class="micro-h-date">${dateStr}</div>${setsHTML}</div>`;
+  return `<div class="micro-h-title">Últimas 3 sesiones</div>` + sessions.map(s => {
+    const dateStr = new Date(s.date).toLocaleDateString('es-ES', {day:'numeric', month:'short'});
+    const setsStr = s.sets.map((set, idx) => s.unilateral 
+      ? `S${idx+1}: I:${set.wL}x${set.rL} D:${set.wR}x${set.rR}`
+      : `S${idx+1}: ${set.wL}kg x ${set.rL}`
+    ).join(' | ');
+    return `<div class="micro-h-session"><div class="micro-h-date">${dateStr}</div><div class="micro-h-set">${setsStr}</div></div>`;
   }).join('');
-
-  return `<div class="micro-h-title">📋 Últimas 3 sesiones</div>${html}`;
 }
 
 function toggleMicroHistory(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  // Rebuild content (exercise name might have changed)
-  const ei = parseInt(id.split('-')[1]);
-  const ex = state.current.exercises[ei];
-  el.innerHTML = buildMicroHistory(ex.name, ex.unilateral);
-  el.classList.toggle('open');
+  document.getElementById(id).classList.toggle('open');
 }
 
-// ============ REORDER ============
-function moveEx(ei, dir) {
-  const exs = state.current.exercises;
-  const newIdx = ei + dir;
-  if (newIdx < 0 || newIdx >= exs.length) return;
-  [exs[ei], exs[newIdx]] = [exs[newIdx], exs[ei]];
-  sync(); renderWorkoutPage();
+function updateSet(ei, si, field, value) {
+  state.current.exercises[ei].sets[si][field] = value;
+  sync();
 }
 
-// ============ SET ACTIONS ============
-function updateSet(ei, si, field, val) { state.current.exercises[ei].sets[si][field]=val; sync(); }
 function toggleSet(ei, si) {
   state.current.exercises[ei].sets[si].done = !state.current.exercises[ei].sets[si].done;
-  haptic(); sync(); renderWorkoutPage();
+  if (state.current.exercises[ei].sets[si].done) haptic();
+  sync();
+  renderWorkoutPage();
 }
-function addSetToEx(ei) { state.current.exercises[ei].sets.push({wL:'',rL:'',wR:'',rR:'',done:false}); sync(); renderWorkoutPage(); }
-function deleteExFromWorkout(ei) { if(confirm('¿Quitar ejercicio?')) { state.current.exercises.splice(ei,1); sync(); renderWorkoutPage(); } }
 
-function loadPreviousWeights(ei) {
-  const name = state.current.exercises[ei].name.toLowerCase().trim();
-  for (let i=state.workouts.length-1; i>=0; i--) {
-    const prevEx = state.workouts[i].exercises.find(e => e.name.toLowerCase().trim()===name);
-    if (prevEx) { state.current.exercises[ei].sets = prevEx.sets.map(s=>({...s,done:false})); sync(); renderWorkoutPage(); return; }
-  }
-  showToast('Sin datos anteriores para este ejercicio');
+function addSetToEx(ei) {
+  const sets = state.current.exercises[ei].sets;
+  const last = sets[sets.length - 1];
+  sets.push({
+    wL: last ? last.wL : '', rL: last ? last.rL : '',
+    wR: last ? last.wR : '', rR: last ? last.rR : '',
+    done: false
+  });
+  sync(); renderWorkoutPage();
 }
 
 function addExercisePrompt() {
-  const name = prompt('Nombre del ejercicio:');
+  const name = prompt("Nombre del ejercicio:");
   if (!name) return;
-  const uni = confirm('¿Es unilateral (brazo/pierna individual)?');
-  state.current.exercises.push({ name, unilateral: uni, sets:[{wL:'',rL:'',wR:'',rR:'',done:false}] });
+  const uni = confirm("¿Es un ejercicio unilateral (un brazo/pierna a la vez)?");
+  state.current.exercises.push({
+    name: name, unilateral: uni,
+    sets: [{wL:'', rL:'', wR:'', rR:'', done:false}]
+  });
   sync(); renderWorkoutPage();
 }
 
-// ============ FINISH ============
+function deleteExFromWorkout(ei) {
+  if (confirm("¿Eliminar este ejercicio del entrenamiento actual?")) {
+    state.current.exercises.splice(ei, 1);
+    sync(); renderWorkoutPage();
+  }
+}
+
+function moveEx(ei, dir) {
+  const target = ei + dir;
+  if (target < 0 || target >= state.current.exercises.length) return;
+  const temp = state.current.exercises[ei];
+  state.current.exercises[ei] = state.current.exercises[target];
+  state.current.exercises[target] = temp;
+  sync(); renderWorkoutPage();
+}
+
+function loadPreviousWeights(ei) {
+  const ex = state.current.exercises[ei];
+  const name = ex.name.toLowerCase().trim();
+  let found = null;
+  for (let i = state.workouts.length-1; i >= 0; i--) {
+    const targetEx = state.workouts[i].exercises.find(e => e.name.toLowerCase().trim() === name);
+    if (targetEx && targetEx.sets.length) { found = targetEx; break; }
+  }
+  if (!found) return showToast("No hay registros previos");
+  ex.sets = found.sets.map(s => ({ wL:s.wL, rL:s.rL, wR:s.wR, rR:s.rR, done:false }));
+  sync(); renderWorkoutPage(); showToast("✓ Cargadas series anteriores");
+}
+
 function finishWorkout() {
+  if (!state.current || !state.current.exercises.length) return;
+  const diff = Math.floor((Date.now()-state.current.startTime)/60000);
   const vol = Math.round(calculateVolume(state.current.exercises));
-  const diff = Math.floor((Date.now()-state.current.startTime)/1000);
-  const dur = `${Math.floor(diff/60)}:${(diff%60).toString().padStart(2,'0')}`;
   document.getElementById('summary-data').innerHTML = `
-    <div style="font-size:48px;font-family:'Bebas Neue',sans-serif;color:var(--accent)">${vol}kg</div>
-    <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Volumen total</div>
-    <div style="margin-top:12px;font-size:16px;color:var(--muted)">${dur} · ${state.current.exercises.length} ejercicios</div>`;
+    <div style="font-size:36px;font-family:'Bebas Neue',sans-serif;color:var(--accent)">${vol} kg</div>
+    <div style="font-size:12px;color:var(--muted);text-transform:uppercase;margin-bottom:15px">Volumen total movido</div>
+    <div style="font-size:20px;font-family:'Bebas Neue',sans-serif;">⏱️ ${diff} Minutos</div>`;
   openModal('modal-summary');
 }
 
 function confirmSaveWorkout() {
-  const diff = Math.floor((Date.now()-state.current.startTime)/1000);
-  state.current.duration = `${Math.floor(diff/60)}:${(diff%60).toString().padStart(2,'0')}`;
+  const diff = Math.floor((Date.now()-state.current.startTime)/60000);
+  state.current.duration = diff;
+  state.current.date = new Date().toISOString();
   state.workouts.push(state.current);
-  state.current = null; sync();
-  clearInterval(state.timerIdx); document.getElementById('timer-bar').style.display='none';
-  closeModal('modal-summary'); goTo('home');
+  state.current = null;
+  if (state.timerIdx) clearInterval(state.timerIdx);
+  document.getElementById('timer-bar').style.display = 'none';
+  sync(); closeModal('modal-summary'); goTo('history');
 }
 
 function discardWorkout() {
-  if (!confirm('¿Descartar el entreno? Se perderán los datos.')) return;
-  state.current=null; sync();
-  clearInterval(state.timerIdx); document.getElementById('timer-bar').style.display='none';
-  closeModal('modal-summary'); goTo('home');
+  if (confirm("¿Seguro que quieres borrar este entreno? Se perderá todo.")) {
+    state.current = null;
+    if (state.timerIdx) clearInterval(state.timerIdx);
+    document.getElementById('timer-bar').style.display = 'none';
+    sync(); closeModal('modal-summary'); goTo('home');
+  }
 }
 
 // ============ HISTORY ============
 function renderHistory() {
-  document.getElementById('history-list').innerHTML = [...state.workouts].reverse().map(w=>workoutCardHTML(w)).join('')
-    || '<div style="color:var(--muted);text-align:center;padding:40px 0">Historial vacío.</div>';
+  const container = document.getElementById('history-list');
+  const items = [...state.workouts].reverse();
+  container.innerHTML = items.map(w => workoutCardHTML(w)).join('') || '<div style="color:var(--muted);text-align:center;padding:40px 0">Historial vacío.</div>';
 }
 
 function deleteHistoryItem(id) {
-  if (!confirm('¿Eliminar?')) return;
-  state.workouts = state.workouts.filter(w=>w.id!==id); sync(); renderHistory(); renderHome();
+  if (confirm("¿Eliminar este registro para siempre?")) {
+    state.workouts = state.workouts.filter(w => w.id !== id);
+    sync(); renderHistory(); if(document.getElementById('page-home').classList.contains('active')) renderHome();
+  }
 }
 
-// ============ TEMPLATES ============
-let editingTemplateId = null;
+// ============ TEMPLATES (SPLITS) ============
+function renderTemplates() {
+  const container = document.getElementById('templates-list');
+  container.innerHTML = state.templates.map(t => `
+    <div class="template-card">
+      <div class="template-name">${t.name}</div>
+      <div class="template-chips">
+        ${t.exercises.map(e => `<div class="chip">${e.name}${e.unilateral?' (Uni)':''}</div>`).join('')}
+      </div>
+      <div class="template-actions">
+        <button class="btn btn-primary btn-sm" onclick="startWorkout('${t.id}')">Entrenar</button>
+        <button class="btn btn-ghost btn-sm" onclick="openTemplateModal('${t.id}')">Editar</button>
+        <button class="btn btn-ghost btn-sm" style="color:var(--accent2);border-color:rgba(255,60,60,0.2)" onclick="deleteTemplate('${t.id}')">Eliminar</button>
+      </div>
+    </div>`).join('') || '<div style="color:var(--muted);text-align:center;padding:40px 0">No tienes splits guardados.</div>';
+}
 
-function openTemplateModal(id=null) {
-  editingTemplateId = id;
-  document.getElementById('tpl-exercises').innerHTML = '';
+function openTemplateModal(id = null) {
+  state.editingTemplateId = id;
+  const container = document.getElementById('tpl-exercises');
+  container.innerHTML = '';
   if (id) {
-    const t = state.templates.find(tpl=>tpl.id===id);
+    const t = state.templates.find(x => x.id === id);
+    document.getElementById('template-modal-title').innerText = "Editar Split";
     document.getElementById('tpl-name').value = t.name;
-    document.getElementById('template-modal-title').innerText = 'Editar Split';
-    t.exercises.forEach(ex => addTplExField(ex.name, ex.setsCount, ex.unilateral));
+    t.exercises.forEach(ex => addTplExField(ex.name, ex.unilateral, ex.setsCount));
   } else {
+    document.getElementById('template-modal-title').innerText = "Nuevo Split";
     document.getElementById('tpl-name').value = '';
-    document.getElementById('template-modal-title').innerText = 'Nuevo Split';
-    addTplExField(); addTplExField(); addTplExField();
+    addTplExField();
   }
   openModal('modal-template');
 }
 
-function addTplExField(name='', sets=3, uni=false) {
+function addTplExField(name = '', uni = false, sets = 3) {
   const container = document.getElementById('tpl-exercises');
   const div = document.createElement('div');
   div.className = 'tpl-ex-row';
   div.innerHTML = `
-    <input type="text" placeholder="Ejercicio" class="tpl-ex-name" value="${name}">
+    <input type="text" class="tpl-ex-name" value="${name}" placeholder="Nombre del ejercicio" style="margin-bottom:8px">
     <div class="tpl-ex-controls">
+      <select class="tpl-ex-type" style="padding:8px; font-size:12px;">
+        <option value="bilateral" ${!uni?'selected':''}>Bilateral (Normal)</option>
+        <option value="unilateral" ${uni?'selected':''}>Unilateral (I/D)</option>
+      </select>
+      <input type="number" class="tpl-ex-sets" value="${sets}" min="1" max="10" placeholder="Series">
+      <div style="flex:1"></div>
       <div class="tpl-ex-reorder">
-        <button class="reorder-btn" onclick="moveTplEx(this,-1)">▲</button>
-        <button class="reorder-btn" onclick="moveTplEx(this,1)">▼</button>
+        <button class="reorder-btn" onclick="moveTplRow(this,-1)">▲</button>
+        <button class="reorder-btn" onclick="moveTplRow(this,1)">▼</button>
       </div>
-      <input type="number" placeholder="Series" class="tpl-ex-sets" value="${sets}" min="1" max="20">
-      <label style="margin:0;display:flex;align-items:center;gap:5px;white-space:nowrap">
-        <input type="checkbox" class="tpl-ex-uni" ${uni?'checked':''} style="width:auto"> Unilateral
-      </label>
-      <button onclick="this.closest('.tpl-ex-row').remove()" style="background:none;border:none;color:var(--accent2);font-size:20px;cursor:pointer;flex-shrink:0">×</button>
+      <button class="btn btn-ghost btn-sm" style="color:var(--accent2);padding:6px 10px" onclick="this.parentElement.parentElement.remove()">✕</button>
     </div>`;
   container.appendChild(div);
 }
 
-function moveTplEx(btn, dir) {
-  const row = btn.closest('.tpl-ex-row');
+function moveTplRow(btn, dir) {
+  const row = btn.parentElement.parentElement.parentElement;
   const container = document.getElementById('tpl-exercises');
-  const rows = [...container.querySelectorAll('.tpl-ex-row')];
-  const idx = rows.indexOf(row);
-  const newIdx = idx + dir;
-  if (newIdx < 0 || newIdx >= rows.length) return;
-  if (dir === -1) container.insertBefore(row, rows[newIdx]);
-  else container.insertBefore(rows[newIdx], row);
+  const rows = Array.from(container.children);
+  const index = rows.indexOf(row);
+  if (index + dir >= 0 && index + dir < rows.length) {
+    if (dir === -1) container.insertBefore(row, rows[index - 1]);
+    else container.insertBefore(rows[index + 1], row);
+  }
 }
 
 function saveTemplate() {
   const name = document.getElementById('tpl-name').value.trim();
-  if (!name) { alert('Ponle un nombre al split'); return; }
-  const rows = document.querySelectorAll('#tpl-exercises .tpl-ex-row');
-  const exercises = [...rows].map(div => ({
-    name: div.querySelector('.tpl-ex-name').value.trim(),
-    setsCount: parseInt(div.querySelector('.tpl-ex-sets').value)||3,
-    unilateral: div.querySelector('.tpl-ex-uni').checked
-  })).filter(ex=>ex.name);
-  if (!exercises.length) { alert('Añade al menos un ejercicio'); return; }
-  if (editingTemplateId) {
-    const idx = state.templates.findIndex(t=>t.id===editingTemplateId);
-    state.templates[idx] = { id:editingTemplateId, name, exercises };
+  if (!name) return alert("Ponle un nombre al split");
+  const rows = document.querySelectorAll('.tpl-ex-row');
+  const exercises = [];
+  rows.forEach(r => {
+    const exName = r.querySelector('.tpl-ex-name').value.trim();
+    if (exName) {
+      exercises.push({
+        name: exName,
+        unilateral: r.querySelector('.tpl-ex-type').value === 'unilateral',
+        setsCount: parseInt(r.querySelector('.tpl-ex-sets').value) || 3
+      });
+    }
+  });
+  if (!exercises.length) return alert("Añade al menos un ejercicio válido");
+  if (state.editingTemplateId) {
+    const t = state.templates.find(x => x.id === state.editingTemplateId);
+    t.name = name; t.exercises = exercises;
   } else {
-    state.templates.push({ id:Date.now().toString(), name, exercises });
+    state.templates.push({ id: Date.now().toString(), name, exercises });
   }
   sync(); closeModal('modal-template'); renderTemplates();
 }
 
 function deleteTemplate(id) {
-  if (!confirm('¿Eliminar este split?')) return;
-  state.templates = state.templates.filter(t=>t.id!==id); sync(); renderTemplates();
-}
-
-function renderTemplates() {
-  const el = document.getElementById('templates-list');
-  if (!state.templates.length) {
-    el.innerHTML = '<div style="color:var(--muted);text-align:center;padding:40px 0">Crea tu primer split.</div>';
-    return;
+  if (confirm("¿Borrar este split?")) {
+    state.templates = state.templates.filter(t => t.id !== id);
+    sync(); renderTemplates();
   }
-  el.innerHTML = state.templates.map(t => {
-    const chips = t.exercises.map(e=>`<span class="chip">${e.name}${e.unilateral?' ⟷':''}</span>`).join('');
-    return `<div class="template-card">
-      <div class="template-name">${t.name}</div>
-      <div style="font-size:11px;color:var(--muted);margin-bottom:8px">${t.exercises.length} ejercicios</div>
-      <div class="template-chips">${chips}</div>
-      <div class="template-actions">
-        <button class="btn btn-primary btn-sm" style="flex:1" onclick="startWorkout('${t.id}')">▶ Empezar</button>
-        <button class="btn btn-ghost btn-sm" onclick="openTemplateModal('${t.id}')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        </button>
-        <button class="btn btn-ghost btn-sm" onclick="deleteTemplate('${t.id}')" style="color:var(--accent2)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14H6L5,6"/></svg>
-        </button>
-      </div>
-    </div>`;
-  }).join('');
 }
 
 // ============ PROGRESS ============
-function setMetric(m) {
-  state.progressMetric = m;
-  document.getElementById('metric-topset').classList.toggle('active', m==='topset');
-  document.getElementById('metric-orm').classList.toggle('active', m==='orm');
+function renderProgress() {
+  const select = document.getElementById('progress-ex-select');
+  const names = new Set();
+  state.workouts.forEach(w => w.exercises.forEach(e => { if(e.name) names.add(e.name.trim()); }));
+  const sorted = Array.from(names).sort();
+  select.innerHTML = sorted.map(n => `<option value="${n}">${n}</option>`).join('') || '<option value="">Sin datos aún</option>';
   renderProgressChart();
 }
 
-function renderProgress() {
-  const sel = document.getElementById('progress-ex-select');
-  const names = [...new Set(state.workouts.flatMap(w=>w.exercises.map(e=>e.name)))];
-  sel.innerHTML = names.map(n=>`<option value="${n}">${n}</option>`).join('');
+function setMetric(m) {
+  state.progressMetric = m;
+  document.querySelectorAll('.metric-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('metric-'+(m==='topset'?'topset':'orm')).classList.add('active');
   renderProgressChart();
 }
 
 function renderProgressChart() {
-  const name = document.getElementById('progress-ex-select').value;
-  if (!name) return;
-
-  const data = [];
+  const exName = document.getElementById('progress-ex-select').value;
+  const statBox = document.getElementById('progress-stats');
+  if (!exName) {
+    statBox.innerHTML = ''; return;
+  }
+  let records = [];
+  let absoluteMax = 0;
   state.workouts.forEach(w => {
-    const ex = w.exercises.find(e=>e.name===name);
+    const ex = w.exercises.find(e => e.name.trim() === exName);
     if (!ex) return;
-    const doneSets = ex.sets.filter(s=>s.done && (parseFloat(s.wL)||0) > 0 && (parseInt(s.rL)||0) > 0);
-    if (!doneSets.length) return;
-
-    let value = 0;
-    if (state.progressMetric === 'topset') {
-      // Max weight lifted in this session
-      value = Math.max(...doneSets.map(s => parseFloat(s.wL)||0));
-    } else {
-      // Epley 1RM: weight * (1 + reps/30), best set of the session
-      const orms = doneSets.map(s => (parseFloat(s.wL)||0) * (1 + (parseInt(s.rL)||0)/30));
-      value = Math.max(...orms);
+    let bestVal = 0;
+    ex.sets.filter(s => s.done).forEach(s => {
+      let wl = parseFloat(s.wL)||0, rl = parseInt(s.rL)||0;
+      let wr = parseFloat(s.wR)||0, rr = parseInt(s.rR)||0;
+      let wMax = ex.unilateral ? Math.max(wl, wr) : wl;
+      let rMax = ex.unilateral ? Math.max(rl, rr) : rl;
+      let val = 0;
+      if (state.progressMetric === 'topset') { val = wMax; }
+      else { val = rMax === 1 ? wMax : wMax * (1 + rMax / 30); }
+      if (val > bestVal) bestVal = val;
+      if (wMax > absoluteMax) absoluteMax = wMax;
+    });
+    if (bestVal > 0) {
+      records.push({ date: new Date(w.date), score: Math.round(bestVal*10)/10 });
     }
-    if (value > 0) data.push({ date: w.date, value: Math.round(value*10)/10 });
   });
 
-  data.sort((a,b)=>new Date(a.date)-new Date(b.date));
+  records.sort((a,b) => a.date - b.date);
+  const labels = records.map(r => r.date.toLocaleDateString('es-ES', {day:'numeric', month:'short'}));
+  const dataValues = records.map(r => r.score);
 
-  if (window.myChart) { window.myChart.destroy(); window.myChart=null; }
+  statBox.innerHTML = `
+    <div class="progress-stats">
+      <div class="pstat"><div class="pstat-val">${absoluteMax} kg</div><div class="pstat-lbl">Peso Máximo Absoluto</div></div>
+      <div class="pstat"><div class="pstat-val">${records.length}</div><div class="pstat-lbl">Sesiones Registradas</div></div>
+    </div>`;
 
-  const statsEl = document.getElementById('progress-stats');
-  if (!data.length) { statsEl.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px">Sin datos para este ejercicio.</div>'; return; }
+  const ctx = document.getElementById('progress-chart').getContext('2d');
+  if (state.chartInstance) state.chartInstance.destroy();
+  if (!records.length) return;
 
-  const label = state.progressMetric==='topset' ? 'Carga Máxima (kg)' : '1RM Estimado (kg)';
-  window.myChart = new Chart(document.getElementById('progress-chart'), {
+  state.chartInstance = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: data.map(d=>new Date(d.date).toLocaleDateString('es-ES',{day:'numeric',month:'short'})),
+      labels: labels,
       datasets: [{
-        label, data: data.map(d=>d.value),
-        borderColor: '#e8ff3c', backgroundColor: 'rgba(232,255,60,.08)',
-        pointBackgroundColor: '#e8ff3c', pointRadius: 5,
-        tension: 0.3, fill: true
+        data: dataValues,
+        borderColor: '#e8ff3c',
+        borderWidth: 2,
+        pointBackgroundColor: '#e8ff3c',
+        pointRadius: 3,
+        tension: 0.15,
+        fill: false
       }]
     },
     options: {
-      responsive:true,
-      plugins:{ legend:{display:false}, tooltip:{backgroundColor:'#1a1a1a',borderColor:'#2a2a2a',borderWidth:1,titleColor:'#e8ff3c',bodyColor:'#f0f0f0'} },
-      scales:{
-        y:{ grid:{color:'#1e1e1e'}, ticks:{color:'#666',font:{size:11}} },
-        x:{ grid:{display:false}, ticks:{color:'#666',font:{size:11}} }
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: '#1a1a1a' }, ticks: { color: '#666', font: { size: 10 } } },
+        y: { grid: { color: '#1a1a1a' }, ticks: { color: '#666', font: { size: 10 } } }
       }
     }
   });
-
-  const max = Math.max(...data.map(d=>d.value));
-  const diff = data[data.length-1].value - data[0].value;
-  const isPos = diff >= 0;
-  statsEl.innerHTML = `<div class="progress-stats">
-    <div class="pstat"><div class="pstat-val">${max}kg</div><div class="pstat-lbl">${state.progressMetric==='topset'?'Mejor marca':'1RM máx'}</div></div>
-    <div class="pstat"><div class="pstat-val" style="color:${isPos?'var(--accent)':'var(--accent2)'}">${isPos?'+':''}${diff.toFixed(1)}kg</div><div class="pstat-lbl">Progreso</div></div>
-    <div class="pstat"><div class="pstat-val">${data.length}</div><div class="pstat-lbl">Sesiones</div></div>
-  </div>`;
 }
-
-// ============ INIT ============
-renderHome();
 </script>
 </body>
 </html>
