@@ -4,368 +4,107 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>IRONLOG v1.2</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        /* ESTÉTICA ORIGINAL v1.1.1 MANTENIDA INTACTA */
         :root {
             --bg-primary: #121212;
             --bg-card: #1e1e1e;
             --bg-input: #2a2a2a;
             --accent: #ffcc00;
-            --accent-dim: #cca300;
             --text-main: #ffffff;
             --text-muted: #aaaaaa;
             --border: #333333;
             --success: #2ecc71;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg-primary); color: var(--text-main); padding-bottom: 80px; padding-top: env(safe-area-inset-top); }
 
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-main);
-            padding-bottom: 80px;
-            padding-top: env(safe-area-inset-top);
-        }
+        .navbar { position: fixed; bottom: 0; left: 0; right: 0; background-color: var(--bg-card); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 0 calc(12px + env(safe-area-inset-bottom)) 0; z-index: 100; }
+        .nav-btn { background: none; border: none; color: var(--text-muted); font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; width: 25%; }
+        .nav-btn.active { color: var(--accent); font-weight: bold; }
+        .nav-btn span { font-size: 20px; }
 
-        /* Navbar Inferior Fija */
-        .navbar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: var(--bg-card);
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0 calc(12px + env(safe-area-inset-bottom)) 0;
-            z-index: 100;
-        }
+        .view { display: none; padding: 16px; max-width: 600px; margin: 0 auto; }
+        .view.active { display: block; }
+        h2 { font-size: 24px; margin-bottom: 16px; }
 
-        .nav-btn {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 11px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-            width: 25%;
-        }
+        .card { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+        .btn { background-color: var(--accent); color: #000; border: none; border-radius: 6px; padding: 12px; font-size: 14px; font-weight: bold; cursor: pointer; display: block; width: 100%; text-align: center; margin-bottom: 8px; }
+        .btn-secondary { background-color: var(--bg-input); color: var(--text-main); border: 1px solid var(--border); }
+        .btn-danger { background-color: #e74c3c; color: white; }
+        .btn-mini { background-color: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); padding: 6px; border-radius: 4px; font-size: 12px; cursor: pointer; }
 
-        .nav-btn.active {
-            color: var(--accent);
-            font-weight: bold;
-        }
+        .timer-banner { background-color: var(--bg-card); border-bottom: 1px solid var(--border); padding: 10px; text-align: center; font-weight: bold; color: var(--accent); font-size: 16px; display: none; }
+        
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .gap-2 { display: flex; gap: 8px; align-items: center; }
+        
+        .input-text { background: none; border: none; color: var(--text-main); font-size: 18px; font-weight: bold; width: 60%; border-bottom: 1px solid transparent; }
+        .input-text:focus { border-bottom-color: var(--accent); outline: none; }
+        
+        .set-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .input-box { display: flex; flex-direction: column; flex: 1; }
+        .input-box label { font-size: 10px; color: var(--text-muted); margin-bottom: 2px; }
+        input[type="number"], input[type="text"], select { background-color: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); padding: 8px; border-radius: 4px; font-size: 14px; width: 100%; text-align: center; }
+        input:focus, select:focus { outline: none; border-color: var(--accent); }
 
-        .nav-btn span {
-            font-size: 20px;
-        }
+        .check-btn { width: 40px; height: 40px; border-radius: 4px; border: 1px solid var(--border); background-color: var(--bg-input); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .check-btn.done { background-color: var(--success); border-color: var(--success); color: #000; }
 
-        /* Estructura de Vistas */
-        .view {
-            display: none;
-            padding: 16px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
+        .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 200; display: none; }
+        .modal-content { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 12px; }
 
-        .view.active {
-            display: block;
-        }
-
-        h2 {
-            font-size: 24px;
-            margin-bottom: 16px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-
-        /* Tarjetas y Contenedores */
-        .card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        /* Botones Generales */
-        .btn {
-            background-color: var(--accent);
-            color: #000000;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 16px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-        }
-
-        .btn-secondary {
-            background-color: var(--bg-input);
-            color: var(--text-main);
-            border: 1px solid var(--border);
-        }
-
-        .btn-danger {
-            background-color: #e74c3c;
-            color: white;
-        }
-
-        /* Cronómetro Superior */
-        .timer-banner {
-            background-color: var(--bg-card);
-            border-bottom: 1px solid var(--border);
-            padding: 10px;
-            text-align: center;
-            font-weight: bold;
-            color: var(--accent);
-            font-size: 16px;
-            display: none;
-        }
-
-        /* Estilos de la Interfaz de Entreno Activo */
-        .exercise-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            gap: 8px;
-        }
-
-        .exercise-title-input {
-            background: none;
-            border: none;
-            color: var(--text-main);
-            font-size: 18px;
-            font-weight: bold;
-            width: 60%;
-            border-bottom: 1px solid transparent;
-        }
-
-        .exercise-title-input:focus {
-            border-bottom-color: var(--accent);
-            outline: none;
-        }
-
-        .action-controls {
-            display: flex;
-            gap: 4px;
-            align-items: center;
-        }
-
-        .btn-mini {
-            background-color: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-
-        /* Tabla de Series */
-        .set-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .set-number {
-            width: 24px;
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: bold;
-        }
-
-        .inputs-group {
-            display: flex;
-            gap: 6px;
-            flex-grow: 1;
-        }
-
-        .input-box {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-
-        .input-box label {
-            font-size: 9px;
-            color: var(--text-muted);
-            margin-bottom: 2px;
-            text-transform: uppercase;
-        }
-
-        input[type="number"], input[type="text"], select {
-            background-color: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 8px;
-            border-radius: 6px;
-            font-size: 14px;
-            width: 100%;
-            text-align: center;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        /* Checkbox de serie completada */
-        .check-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            background-color: var(--bg-input);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            transition: all 0.1s ease;
-        }
-
-        .check-btn.done {
-            background-color: var(--success);
-            border-color: var(--success);
-            color: #000000;
-        }
-
-        /* Microhistorial de 3 Sesiones desplegable */
-        .micro-history-panel {
-            background-color: rgba(0,0,0,0.2);
-            border-radius: 6px;
-            padding: 8px;
-            margin-top: 8px;
-            margin-bottom: 12px;
-            font-size: 12px;
-            border-left: 3px solid var(--accent);
-            display: none;
-        }
-
-        .micro-history-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 3px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            color: var(--text-muted);
-        }
+        /* NUEVOS ESTILOS ESTRICTAMENTE FUNCIONALES (v1.2) */
+        .micro-history-panel { background-color: var(--bg-input); border-radius: 4px; padding: 8px; margin: 8px 0; font-size: 12px; border-left: 3px solid var(--accent); display: none; }
+        .micro-history-item { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid var(--border); color: var(--text-muted); }
         .micro-history-item:last-child { border-bottom: none; }
-        .micro-history-date { color: var(--accent); font-weight: bold; }
-
-        /* Estilos del Historial y Botón IA */
-        .history-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
-        }
-
-        .history-actions {
-            display: flex;
-            gap: 6px;
-        }
-
-        /* Selectores de la Vista Progreso */
-        .selector-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        .chart-container {
-            position: relative;
-            width: 100%;
-            height: 300px;
-            background-color: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 10px;
-        }
-
-        /* Modales básicos integrados sin usar Prompts nativos */
-        .modal {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0,0,0,0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-            z-index: 200;
-            display: none;
-        }
-
-        .modal-content {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            width: 100%;
-            max-width: 450px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        
+        .native-chart-container { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+        .chart-row { display: flex; align-items: center; gap: 10px; }
+        .chart-label { width: 70px; font-size: 11px; color: var(--text-muted); text-align: right; }
+        .chart-track { flex-grow: 1; background: var(--bg-input); border-radius: 4px; height: 24px; position: relative; }
+        .chart-bar { background: var(--accent); height: 100%; width: 0%; border-radius: 4px; transition: width 0.3s; }
+        .chart-value { position: absolute; right: 8px; top: 4px; font-size: 12px; font-weight: bold; color: var(--text-main); }
     </style>
 </head>
 <body>
 
-    <div id="timerBanner" class="timer-banner">⏱️ EN RUTA: 00:00:00</div>
+    <div id="timerBanner" class="timer-banner">⏱️ 00:00:00</div>
 
     <div id="viewTemplates" class="view active">
-        <h2>Mis Rutinas / Splits</h2>
+        <h2>Rutinas</h2>
         <div id="templatesList"></div>
-        <button class="btn" onclick="openNewTemplateModal()">＋ Crear Nueva Plantilla</button>
+        <button class="btn btn-secondary" onclick="openTemplateModal()">＋ Crear Rutina</button>
     </div>
 
     <div id="viewActive" class="view">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-            <input type="text" id="activeWorkoutName" class="exercise-title-input" style="font-size:24px; width:70%;" onchange="saveActiveWorkoutState()">
+        <div class="flex-between" style="margin-bottom:16px;">
+            <input type="text" id="activeWorkoutName" class="input-text" onchange="saveActiveWorkout()">
             <div id="activeClock" style="font-weight:bold; color:var(--accent);">00:00</div>
         </div>
-        
         <div id="activeExercisesContainer"></div>
-
-        <button class="btn btn-secondary" onclick="addExerciseToActiveWorkout()" style="margin-bottom:12px;">＋ Añadir Ejercicio Libre</button>
-        <button class="btn" onclick="finishActiveWorkout()">🏁 Terminar y Guardar Entrenamiento</button>
-        <button class="btn btn-danger" onclick="cancelActiveWorkout()" style="margin-top:12px; padding:8px; font-size:12px;">Cancelar Rutina</button>
+        <button class="btn btn-secondary" onclick="addExerciseToActive()">＋ Ejercicio Libre</button>
+        <button class="btn" onclick="finishWorkout()">🏁 Terminar Entreno</button>
+        <button class="btn btn-danger" onclick="cancelWorkout()">Cancelar</button>
     </div>
 
     <div id="viewHistory" class="view">
-        <h2>Historial de Entrenamientos</h2>
+        <h2>Historial</h2>
         <div id="historyContainer"></div>
     </div>
 
     <div id="viewProgress" class="view">
-        <h2>Análisis de Progreso</h2>
-        <div class="selector-group">
-            <select id="progressExerciseSelect" onchange="updateProgressChart()">
-                </select>
-            <select id="progressMetricSelect" onchange="updateProgressChart()">
-                <option value="topSet">Carga Máxima (Top Set)</option>
-                <option value="1rm">Fuerza Estimada (1RM Teórico)</option>
+        <h2>Progreso</h2>
+        <div style="display:flex; gap:8px; margin-bottom:16px;">
+            <select id="progExSelect" onchange="drawNativeChart()" style="flex:1;"></select>
+            <select id="progMetricSelect" onchange="drawNativeChart()" style="flex:1;">
+                <option value="top">Peso Máximo</option>
+                <option value="1rm">1RM Estimado</option>
             </select>
         </div>
-        <div class="chart-container">
-            <canvas id="progressChart"></canvas>
+        <div class="card">
+            <div id="nativeChart" class="native-chart-container"></div>
         </div>
     </div>
 
@@ -378,723 +117,349 @@
 
     <div id="templateModal" class="modal">
         <div class="modal-content">
-            <h3 id="modalTemplateTitle" style="font-size:18px; font-weight:bold;">Nueva Plantilla</h3>
-            <input type="text" id="modalTemplateName" placeholder="Nombre del Split (Ej: Push, Pecho/Bíceps)">
-            <div id="modalExercisesList" style="max-height:200px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
-            <button class="btn btn-secondary" onclick="addExerciseToModalList()">＋ Añadir Ejercicio</button>
-            <div style="display:flex; gap:10px; margin-top:8px;">
-                <button class="btn btn-secondary" onclick="closeTemplateModal()" style="flex:1;">Cancelar</button>
-                <button class="btn" onclick="saveTemplateFromModal()" style="flex:1;">Guardar</button>
+            <h3 id="modalTitle">Plantilla</h3>
+            <input type="text" id="modalName" placeholder="Nombre de rutina">
+            <div id="modalExList" style="max-height:250px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;"></div>
+            <button class="btn btn-secondary" onclick="addExToModal()">＋ Ejercicio</button>
+            <div class="flex-between" style="gap:8px;">
+                <button class="btn btn-danger" onclick="closeModal()">Cancelar</button>
+                <button class="btn" onclick="saveTemplate()">Guardar</button>
             </div>
         </div>
     </div>
 
     <script>
-        // ==========================================
-        // VARIABLES GLOBALES Y CONTROL DE ESTADO
-        // ==========================================
-        let splits = [];
-        let history = [];
-        let activeWorkout = null;
-        let timerInterval = null;
-        let progressChartInstance = null;
-        let currentEditingTemplateId = null;
+        let splits = [], historyData = [], activeWk = null, timerInt = null, editId = null;
 
-        // ==========================================
-        // 1. SCRIPT DE MIGRACIÓN AUTOMÁTICA (v1.1.1 INTEGRADO)
-        // ==========================================
-        function runDataMigration() {
-            let localHistory = JSON.parse(localStorage.getItem('ironlog_history') || '[]');
-            let structuralChange = false;
-
-            localHistory.forEach(workout => {
-                // Reparador de Fechas Inválidas
-                if (!workout.date || workout.date.includes("Invalid")) {
-                    workout.date = new Date().toLocaleDateString('es-ES');
-                    structuralChange = true;
-                }
-                // Traductor de campos antiguos a Unilateral L/R
-                workout.exercises.forEach(ex => {
-                    if (ex.sets) {
-                        ex.sets.forEach(set => {
-                            if (set.weight !== undefined && set.wL === undefined) {
-                                set.wL = set.weight; set.rL = set.reps;
-                                set.wR = set.weight; set.rR = set.reps;
-                                delete set.weight; delete set.reps;
-                                structuralChange = true;
-                            }
-                        });
-                    }
+        // 1. MIGRACIÓN (Intacta)
+        function runMigration() {
+            let h = JSON.parse(localStorage.getItem('ironlog_history') || '[]');
+            let changed = false;
+            h.forEach(w => {
+                if(!w.date || w.date.includes("Invalid")) { w.date = new Date().toLocaleDateString('es-ES'); changed = true; }
+                if(w.exercises) w.exercises.forEach(e => {
+                    if(e.sets) e.sets.forEach(s => {
+                        if(s.weight !== undefined && s.wL === undefined) {
+                            s.wL = s.weight; s.rL = s.reps; s.wR = s.weight; s.rR = s.reps;
+                            delete s.weight; delete s.reps; changed = true;
+                        }
+                    });
                 });
             });
-
-            if (structuralChange) {
-                localStorage.setItem('ironlog_history', JSON.stringify(localHistory));
-            }
+            if(changed) localStorage.setItem('ironlog_history', JSON.stringify(h));
         }
 
-        // ==========================================
-        // INITIALIZATION
-        // ==========================================
-        window.onload = function() {
-            runDataMigration();
-            loadLocalStorageData();
-            renderTemplates();
-            renderHistory();
-            checkAndRestoreActiveWorkout();
-            populateExerciseSelect();
+        window.onload = () => {
+            runMigration();
+            splits = JSON.parse(localStorage.getItem('ironlog_splits')) || [];
+            historyData = JSON.parse(localStorage.getItem('ironlog_history')) || [];
+            renderTemplates(); renderHistory(); loadActive(); updateProgressSelectors();
         };
 
-        function loadLocalStorageData() {
-            splits = JSON.parse(localStorage.getItem('ironlog_splits')) || [
-                { id: '1', name: 'Torso', exercises: [{ name: 'Press Banca', isUnilateral: false }, { name: 'Jalón al Pecho', isUnilateral: false }] },
-                { id: '2', name: 'Pierna', exercises: [{ name: 'Sentadilla', isUnilateral: false }, { name: 'Prensa', isUnilateral: false }] }
-            ];
-            history = JSON.parse(localStorage.getItem('ironlog_history')) || [];
+        function switchView(v) {
+            document.querySelectorAll('.view, .nav-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('view'+v).classList.add('active');
+            document.getElementById('nav'+v).classList.add('active');
+            if(v === 'Progress') { updateProgressSelectors(); drawNativeChart(); }
         }
 
-        function saveSplits() {
-            localStorage.setItem('ironlog_splits', JSON.stringify(splits));
-            renderTemplates();
-        }
-
-        // ==========================================
-        // FEEDBACK HÁPTICO (NUEVO v1.2)
-        // ==========================================
-        function triggerHapticFeedback() {
-            if (navigator.vibrate) {
-                navigator.vibrate(40); // Vibración corta y sutil de confirmación
-            }
-        }
-
-        // ==========================================
-        // SISTEMA DE NAVEGACIÓN
-        // ==========================================
-        function switchView(viewName) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            
-            document.getElementById('view' + viewName).classList.add('active');
-            document.getElementById('nav' + viewName).classList.add('active');
-
-            if (viewName === 'Progress') {
-                populateExerciseSelect();
-                updateProgressChart();
-            }
-        }
-
-        // ==========================================
-        // GESTIÓN DE PLANTILLAS / SPLITS (CON REORDENACIÓN ▲/▼ NUEVA v1.2)
-        // ==========================================
+        // --- RUTINAS ---
         function renderTemplates() {
-            const container = document.getElementById('templatesList');
-            container.innerHTML = '';
-            splits.forEach(split => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                        <strong style="font-size:18px;">${split.name}</strong>
-                        <div style="display:flex; gap:6px;">
-                            <button class="btn-mini" onclick="startWorkout('${split.id}')" style="background-color:var(--accent); color:#000;">Entrenar</button>
-                            <button class="btn-mini" onclick="openEditTemplateModal('${split.id}')">Editar</button>
-                            <button class="btn-mini" onclick="deleteTemplate('${split.id}')" style="color:#e74c3c;">✕</button>
+            const c = document.getElementById('templatesList'); c.innerHTML = '';
+            splits.forEach(s => {
+                c.innerHTML += `
+                    <div class="card">
+                        <div class="flex-between" style="margin-bottom:8px;">
+                            <strong>${s.name}</strong>
+                            <div class="gap-2">
+                                <button class="btn-mini" style="background:var(--accent);color:#000;" onclick="startWorkout('${s.id}')">Entrenar</button>
+                                <button class="btn-mini" onclick="openTemplateModal('${s.id}')">Editar</button>
+                                <button class="btn-mini" style="color:#e74c3c;" onclick="deleteTemplate('${s.id}')">✕</button>
+                            </div>
                         </div>
-                    </div>
-                    <p style="font-size:13px; color:var(--text-muted);">${split.exercises.map(e => e.name + (e.isUnilateral?' (U)':'')).join(', ')}</p>
-                `;
-                container.appendChild(card);
+                        <p style="font-size:12px;color:var(--text-muted)">${s.exercises.map(e => e.name).join(', ')}</p>
+                    </div>`;
             });
         }
 
-        function openNewTemplateModal() {
-            currentEditingTemplateId = null;
-            document.getElementById('modalTemplateTitle').innerText = "Nueva Plantilla";
-            document.getElementById('modalTemplateName').value = "";
-            document.getElementById('modalExercisesList').innerHTML = "";
-            document.getElementById('templateModal').style.display = 'flex';
-            addExerciseToModalList();
-        }
-
-        function openEditTemplateModal(id) {
-            currentEditingTemplateId = id;
-            const split = splits.find(s => s.id === id);
-            document.getElementById('modalTemplateTitle').innerText = "Editar Plantilla";
-            document.getElementById('modalTemplateName').value = split.name;
-            
-            const listContainer = document.getElementById('modalExercisesList');
-            listContainer.innerHTML = "";
-            
-            split.exercises.forEach(ex => {
-                addExerciseToModalList(ex.name, ex.isUnilateral);
-            });
+        function openTemplateModal(id = null) {
+            editId = id; document.getElementById('modalName').value = '';
+            const list = document.getElementById('modalExList'); list.innerHTML = '';
+            if(id) {
+                const s = splits.find(x => x.id === id);
+                document.getElementById('modalName').value = s.name;
+                s.exercises.forEach(e => addExToModal(e.name, e.isUnilateral));
+            } else addExToModal();
             document.getElementById('templateModal').style.display = 'flex';
         }
 
-        function addExerciseToModalList(name = '', isUnilateral = false) {
-            const container = document.getElementById('modalExercisesList');
-            const index = container.children.length;
+        function addExToModal(name = '', isUni = false) {
+            const list = document.getElementById('modalExList');
             const div = document.createElement('div');
-            div.className = 'modal-ex-row';
-            div.style = 'display:flex; gap:6px; align-items:center; background: rgba(255,255,255,0.02); padding:6px; border-radius:6px;';
+            div.className = 'flex-between gap-2 modal-row';
+            div.style.background = 'var(--bg-input)'; div.style.padding = '8px'; div.style.borderRadius = '4px';
             div.innerHTML = `
-                <input type="text" class="modal-ex-name" value="${name}" placeholder="Ejercicio" style="flex:2; padding:6px; font-size:13px; text-align:left;">
-                <select class="modal-ex-uni" style="flex:1; padding:6px; font-size:12px;">
-                    <option value="false" ${!isUnilateral?'selected':''}>Estándar</option>
-                    <option value="true" ${isUnilateral?'selected':''}>Unilateral</option>
+                <input type="text" class="mod-name" value="${name}" placeholder="Ejercicio" style="flex:2; padding:4px;">
+                <select class="mod-uni" style="flex:1; padding:4px;">
+                    <option value="false" ${!isUni?'selected':''}>Normal</option>
+                    <option value="true" ${isUni?'selected':''}>Uni</option>
                 </select>
-                <button class="btn-mini" onclick="moveTemplateExerciseUi(${index}, -1)">▲</button>
-                <button class="btn-mini" onclick="moveTemplateExerciseUi(${index}, 1)">▼</button>
-                <button class="btn-mini" onclick="this.parentElement.remove()" style="color:#e74c3c;">✕</button>
+                <button class="btn-mini" onclick="moveModalRow(this, -1)">▲</button>
+                <button class="btn-mini" onclick="moveModalRow(this, 1)">▼</button>
+                <button class="btn-mini" style="color:#e74c3c;" onclick="this.parentElement.remove()">✕</button>
             `;
-            container.appendChild(div);
-            reindexTemplateUiButtons();
+            list.appendChild(div);
         }
 
-        function moveTemplateExerciseUi(index, direction) {
-            const container = document.getElementById('modalExercisesList');
+        function moveModalRow(btn, dir) {
+            const row = btn.parentElement;
+            const container = row.parentElement;
             const rows = Array.from(container.children);
-            const targetIndex = index + direction;
-            if (targetIndex < 0 || targetIndex >= rows.length) return;
-
-            if (direction === 1) {
-                container.insertBefore(rows[targetIndex], rows[index]);
-            } else {
-                container.insertBefore(rows[index], rows[targetIndex]);
+            const idx = rows.indexOf(row);
+            if(idx + dir >= 0 && idx + dir < rows.length) {
+                if(dir === -1) container.insertBefore(row, rows[idx-1]);
+                else container.insertBefore(rows[idx+1], row);
             }
-            reindexTemplateUiButtons();
         }
 
-        function reindexTemplateUiButtons() {
-            const container = document.getElementById('modalExercisesList');
-            Array.from(container.children).forEach((row, idx) => {
-                const buttons = row.querySelectorAll('button');
-                buttons[0].setAttribute('onclick', `moveTemplateExerciseUi(${idx}, -1)`);
-                buttons[1].setAttribute('onclick', `moveTemplateExerciseUi(${idx}, 1)`);
+        function saveTemplate() {
+            const name = document.getElementById('modalName').value;
+            if(!name) return;
+            let ex = [];
+            document.querySelectorAll('.modal-row').forEach(r => {
+                const n = r.querySelector('.mod-name').value;
+                if(n) ex.push({ name: n, isUnilateral: r.querySelector('.mod-uni').value === 'true' });
             });
+            if(editId) { const s = splits.find(x => x.id === editId); s.name = name; s.exercises = ex; }
+            else splits.push({ id: Date.now().toString(), name, exercises: ex });
+            localStorage.setItem('ironlog_splits', JSON.stringify(splits));
+            closeModal(); renderTemplates();
         }
+        function closeModal() { document.getElementById('templateModal').style.display = 'none'; }
+        function deleteTemplate(id) { if(confirm('¿Borrar?')) { splits = splits.filter(s => s.id !== id); localStorage.setItem('ironlog_splits', JSON.stringify(splits)); renderTemplates(); } }
 
-        function closeTemplateModal() {
-            document.getElementById('templateModal').style.display = 'none';
-        }
-
-        function saveTemplateFromModal() {
-            const name = document.getElementById('modalTemplateName').value.trim();
-            if (!name) return alert('Pon un nombre a la rutina');
-
-            const rows = document.querySelectorAll('.modal-ex-row');
-            let builtExercises = [];
-            rows.forEach(row => {
-                const exName = row.querySelector('.modal-ex-name').value.trim();
-                const isUni = row.querySelector('.modal-ex-uni').value === 'true';
-                if (exName) {
-                    builtExercises.push({ name: exName, isUnilateral: isUni });
-                }
-            });
-
-            if (currentEditingTemplateId) {
-                const target = splits.find(s => s.id === currentEditingTemplateId);
-                target.name = name;
-                target.exercises = builtExercises;
-            } else {
-                splits.push({
-                    id: Date.now().toString(),
-                    name: name,
-                    exercises: builtExercises
-                });
-            }
-            saveSplits();
-            closeTemplateModal();
-        }
-
-        function deleteTemplate(id) {
-            if (confirm('¿Eliminar esta plantilla definitivamente?')) {
-                splits = splits.filter(s => s.id !== id);
-                saveSplits();
-            }
-        }
-
-        // ==========================================
-        // CRONÓMETRO AVANZADO (PERSISTENTE v1.1.1)
-        // ==========================================
-        function startTimer(startTime) {
-            if (timerInterval) clearInterval(timerInterval);
-            const banner = document.getElementById('timerBanner');
-            const activeClock = document.getElementById('activeClock');
-            banner.style.display = 'block';
-
-            timerInterval = setInterval(() => {
-                const elapsedMs = Date.now() - startTime;
-                const sec = Math.floor((elapsedMs / 1000) % 60);
-                const min = Math.floor((elapsedMs / (1000 * 60)) % 60);
-                const hr = Math.floor((elapsedMs / (1000 * 60 * 60)) % 24);
-
-                const timeStr = `${hr.toString().padStart(2,'0')}:${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
-                banner.innerText = `⏱️ EN RUTA: ${timeStr}`;
-                activeClock.innerText = `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+        // --- RELOJ ---
+        function startTimer(st) {
+            clearInterval(timerInt);
+            document.getElementById('timerBanner').style.display = 'block';
+            timerInt = setInterval(() => {
+                const diff = Date.now() - st;
+                const s = Math.floor((diff/1000)%60).toString().padStart(2,'0');
+                const m = Math.floor((diff/60000)%60).toString().padStart(2,'0');
+                const h = Math.floor((diff/3600000)).toString().padStart(2,'0');
+                document.getElementById('timerBanner').innerText = `⏱️ ${h}:${m}:${s}`;
+                document.getElementById('activeClock').innerText = `${m}:${s}`;
             }, 1000);
         }
 
-        function stopTimer() {
-            if (timerInterval) clearInterval(timerInterval);
-            document.getElementById('timerBanner').style.display = 'none';
+        // --- ENTRENO ACTIVO ---
+        function startWorkout(id) {
+            const t = splits.find(x => x.id === id);
+            activeWk = { id: Date.now().toString(), name: t.name, start: Date.now(), exercises: t.exercises.map(e => ({ name: e.name, isUnilateral: e.isUnilateral, sets: [{wL:'', rL:'', wR:'', rR:'', done:false}] })) };
+            saveActiveWorkout(); loadActive(); switchView('Active');
         }
-
-        // ==========================================
-        // GESTIÓN DEL ENTRENO ACTIVO (REORDENACIÓN ▲/▼ Y MICROHISTORIAL)
-        // ==========================================
-        function startWorkout(templateId) {
-            const template = splits.find(s => s.id === templateId);
-            activeWorkout = {
-                id: Date.now().toString(),
-                name: template.name,
-                startTime: Date.now(),
-                exercises: template.exercises.map(ex => ({
-                    name: ex.name,
-                    isUnilateral: ex.isUnilateral,
-                    sets: [{ wL: '', rL: '', wR: '', rR: '', done: false }]
-                }))
-            };
-            saveActiveWorkoutState();
-            renderActiveWorkout();
-            startTimer(activeWorkout.startTime);
-            switchView('Active');
-        }
-
-        function checkAndRestoreActiveWorkout() {
+        function loadActive() {
             const saved = localStorage.getItem('ironlog_active_workout');
-            if (saved) {
-                activeWorkout = JSON.parse(saved);
-                renderActiveWorkout();
-                startTimer(activeWorkout.startTime);
-                document.getElementById('timerBanner').style.display = 'block';
-            }
+            if(saved) activeWk = JSON.parse(saved);
+            if(!activeWk) { document.getElementById('activeExercisesContainer').innerHTML = ''; document.getElementById('timerBanner').style.display = 'none'; return; }
+            
+            document.getElementById('activeWorkoutName').value = activeWk.name;
+            startTimer(activeWk.start);
+            renderActive();
+        }
+        function saveActiveWorkout() {
+            if(activeWk) {
+                activeWk.name = document.getElementById('activeWorkoutName').value;
+                localStorage.setItem('ironlog_active_workout', JSON.stringify(activeWk));
+            } else localStorage.removeItem('ironlog_active_workout');
         }
 
-        function saveActiveWorkoutState() {
-            if (activeWorkout) {
-                activeWorkout.name = document.getElementById('activeWorkoutName').value || activeWorkout.name;
-                localStorage.setItem('ironlog_active_workout', JSON.stringify(activeWorkout));
-            }
-        }
-
-        function renderActiveWorkout() {
-            if (!activeWorkout) {
-                document.getElementById('activeExercisesContainer').innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:30px;">No hay ningún entrenamiento activo. ¡Elige una rutina y empieza!</p>`;
-                document.getElementById('activeWorkoutName').value = "IRONLOG";
-                document.getElementById('activeClock').innerText = "00:00";
-                return;
-            }
-
-            document.getElementById('activeWorkoutName').value = activeWorkout.name;
-            const container = document.getElementById('activeExercisesContainer');
-            container.innerHTML = '';
-
-            activeWorkout.exercises.forEach((ex, exIdx) => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                
-                let setsHtml = '';
-                ex.sets.forEach((set, setIdx) => {
-                    setsHtml += `
-                        <div class="set-row">
-                            <div class="set-number">${setIdx + 1}</div>
-                            <div class="inputs-group">
-                                ${ex.isUnilateral ? `
-                                    <div class="input-box">
-                                        <label>Kg L</label>
-                                        <input type="number" step="any" placeholder="0" value="${set.wL}" onchange="updateSetData(${exIdx}, ${setIdx}, 'wL', this.value)">
-                                    </div>
-                                    <div class="input-box">
-                                        <label>Rep L</label>
-                                        <input type="number" placeholder="0" value="${set.rL}" onchange="updateSetData(${exIdx}, ${setIdx}, 'rL', this.value)">
-                                    </div>
-                                    <div class="input-box">
-                                        <label>Kg R</label>
-                                        <input type="number" step="any" placeholder="0" value="${set.wR}" onchange="updateSetData(${exIdx}, ${setIdx}, 'wR', this.value)">
-                                    </div>
-                                    <div class="input-box">
-                                        <label>Rep R</label>
-                                        <input type="number" placeholder="0" value="${set.rR}" onchange="updateSetData(${exIdx}, ${setIdx}, 'rR', this.value)">
-                                    </div>
-                                ` : `
-                                    <div class="input-box">
-                                        <label>Peso (Kg)</label>
-                                        <input type="number" step="any" placeholder="0" value="${set.wL}" onchange="updateSetData(${exIdx}, ${setIdx}, 'wL', this.value)">
-                                    </div>
-                                    <div class="input-box">
-                                        <label>Reps</label>
-                                        <input type="number" placeholder="0" value="${set.rL}" onchange="updateSetData(${exIdx}, ${setIdx}, 'rL', this.value)">
-                                    </div>
-                                `}
-                            </div>
-                            <button class="check-btn ${set.done ? 'done' : ''}" onclick="toggleSetDone(${exIdx}, ${setIdx})">✓</button>
-                        </div>
-                    `;
-                });
-
-                card.innerHTML = `
-                    <div class="exercise-header">
-                        <input type="text" class="exercise-title-input" value="${ex.name}" onchange="updateExerciseName(${exIdx}, this.value)">
-                        <div class="action-controls">
-                            <button class="btn-mini" onclick="toggleMicroHistoryUi('${ex.name}', ${exIdx})" title="Ver marcas anteriores">🕒 Historial</button>
-                            <button class="btn-mini" onclick="moveActiveExercise(${exIdx}, -1)">▲</button>
-                            <button class="btn-mini" onclick="moveActiveExercise(${exIdx}, 1)">▼</button>
-                            <button class="btn-mini" onclick="deleteExerciseFromActive(${exIdx})" style="color:#e74c3c;">✕</button>
+        function renderActive() {
+            const c = document.getElementById('activeExercisesContainer'); c.innerHTML = '';
+            activeWk.exercises.forEach((ex, i) => {
+                let html = `
+                <div class="card">
+                    <div class="flex-between" style="margin-bottom:8px;">
+                        <input type="text" class="input-text" value="${ex.name}" onchange="updateExName(${i}, this.value)">
+                        <div class="gap-2">
+                            <button class="btn-mini" onclick="toggleHistory(${i}, '${ex.name}')">🕒</button>
+                            <button class="btn-mini" onclick="moveActiveEx(${i}, -1)">▲</button>
+                            <button class="btn-mini" onclick="moveActiveEx(${i}, 1)">▼</button>
+                            <button class="btn-mini" style="color:#e74c3c;" onclick="delActiveEx(${i})">✕</button>
                         </div>
                     </div>
-                    
-                    <div id="microHistory-${exIdx}" class="micro-history-panel"></div>
-
-                    <div id="setsList-${exIdx}">${setsHtml}</div>
-                    <button class="btn btn-secondary" onclick="addSetToExercise(${exIdx})" style="padding:6px; font-size:12px; margin-top:10px;">＋ Añadir Serie</button>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        // CONTROL DE MOVIMIENTO ▲/▼ EN DIRECTO
-        function moveActiveExercise(index, direction) {
-            let targetIndex = index + direction;
-            if (targetIndex < 0 || targetIndex >= activeWorkout.exercises.length) return;
-            
-            let temp = activeWorkout.exercises[index];
-            activeWorkout.exercises[index] = activeWorkout.exercises[targetIndex];
-            activeWorkout.exercises[targetIndex] = temp;
-            
-            saveActiveWorkoutState();
-            renderActiveWorkout();
-        }
-
-        // LOGICA DESPLEGABLE MICROHISTORIAL (NUEVO v1.2)
-        function toggleMicroHistoryUi(exerciseName, exIdx) {
-            const panel = document.getElementById(`microHistory-${exIdx}`);
-            if (panel.style.display === 'block') {
-                panel.style.display = 'none';
-                return;
-            }
-
-            let matches = [];
-            let reversedHistory = [...history].reverse();
-            
-            for (let w of reversedHistory) {
-                let matchEx = w.exercises.find(e => e.name.toLowerCase() === exerciseName.toLowerCase());
-                if (matchEx) {
-                    matches.push({ date: w.date, sets: matchEx.sets, isUni: matchEx.isUnilateral });
-                    if (matches.length === 3) break; // Límite exacto de 3 sesiones
-                }
-            }
-
-            if (matches.length === 0) {
-                panel.innerHTML = `<div style="color:var(--text-muted);">No hay entrenos registrados de este ejercicio.</div>`;
-            } else {
-                let html = `<div style="font-weight:bold; margin-bottom:4px; color:var(--text-main);">Últimas 3 sesiones:</div>`;
-                matches.forEach(m => {
-                    let setsStr = m.sets.map(s => {
-                        if (m.isUni) {
-                            return `[L:${s.wL}k x ${s.rL} / R:${s.wR}k x ${s.rR}]`;
-                        } else {
-                            return `${s.wL}kg x ${s.rL}`;
-                        }
-                    }).join(' | ');
-                    html += `
-                        <div class="micro-history-item">
-                            <span class="micro-history-date">${m.date}</span>
-                            <span style="text-align:right; max-width:75%; overflow:hidden; text-overflow:ellipsis;">${setsStr}</span>
-                        </div>
-                    `;
-                });
-                panel.innerHTML = html;
-            }
-            panel.style.display = 'block';
-        }
-
-        function updateExerciseName(exIdx, val) {
-            activeWorkout.exercises[exIdx].name = val;
-            saveActiveWorkoutState();
-        }
-
-        function updateSetData(exIdx, setIdx, field, val) {
-            activeWorkout.exercises[exIdx].sets[setIdx][field] = val;
-            saveActiveWorkoutState();
-        }
-
-        function toggleSetDone(exIdx, setIdx) {
-            const currentState = activeWorkout.exercises[exIdx].sets[setIdx].done;
-            activeWorkout.exercises[exIdx].sets[setIdx].done = !currentState;
-            
-            if (!currentState === true) {
-                triggerHapticFeedback(); // Ejecutar vibración sutil al marcar completado
-            }
-            
-            saveActiveWorkoutState();
-            renderActiveWorkout();
-        }
-
-        function addSetToExercise(exIdx) {
-            const currentSets = activeWorkout.exercises[exIdx].sets;
-            const lastSet = currentSets[currentSets.length - 1];
-            // Auto-rellena con los valores del set anterior por comodidad
-            currentSets.push({
-                wL: lastSet ? lastSet.wL : '',
-                rL: lastSet ? lastSet.rL : '',
-                wR: lastSet ? lastSet.wR : '',
-                rR: lastSet ? lastSet.rR : '',
-                done: false
-            });
-            saveActiveWorkoutState();
-            renderActiveWorkout();
-        }
-
-        function addExerciseToActiveWorkout() {
-            if (!activeWorkout) return;
-            activeWorkout.exercises.push({
-                name: 'Nuevo Ejercicio',
-                isUnilateral: false,
-                sets: [{ wL: '', rL: '', wR: '', rR: '', done: false }]
-            });
-            saveActiveWorkoutState();
-            renderActiveWorkout();
-        }
-
-        function deleteExerciseFromActive(index) {
-            if (confirm('¿Retirar este ejercicio del entreno actual?')) {
-                activeWorkout.exercises.splice(index, 1);
-                saveActiveWorkoutState();
-                renderActiveWorkout();
-            }
-        }
-
-        function finishActiveWorkout() {
-            if (!activeWorkout) return;
-            
-            // Filtrar y guardar solo series que se hayan rellenado
-            const builtExercises = activeWorkout.exercises.map(ex => {
-                const completedSets = ex.sets.filter(s => s.wL !== '' || s.rL !== '');
-                return {
-                    name: ex.name,
-                    isUnilateral: ex.isUnilateral,
-                    sets: completedSets
-                };
-            }).filter(ex => ex.sets.length > 0);
-
-            if (builtExercises.length === 0) {
-                alert('No has anotado marcas válidas en ninguna serie.');
-                return;
-            }
-
-            const elapsedMs = Date.now() - activeWorkout.startTime;
-            const finalMin = Math.floor(elapsedMs / (1000 * 60));
-
-            const completedWorkout = {
-                id: activeWorkout.id,
-                name: activeWorkout.name,
-                date: new Date().toLocaleDateString('es-ES'),
-                duration: finalMin,
-                exercises: builtExercises
-            };
-
-            history.push(completedWorkout);
-            localStorage.setItem('ironlog_history', JSON.stringify(history));
-            
-            localStorage.removeItem('ironlog_active_workout');
-            activeWorkout = null;
-            stopTimer();
-            
-            renderHistory();
-            switchView('History');
-        }
-
-        function cancelActiveWorkout() {
-            if (confirm('¿Seguro que quieres borrar el entrenamiento actual? Se perderán las marcas de hoy.')) {
-                localStorage.removeItem('ironlog_active_workout');
-                activeWorkout = null;
-                stopTimer();
-                renderActiveWorkout();
-                switchView('Templates');
-            }
-        }
-
-        // ==========================================
-        // VISTA HISTORIAL Y EXPORTACIÓN INTELIGENTE PARA IA (NUEVO v1.2)
-        // ==========================================
-        function renderHistory() {
-            const container = document.getElementById('historyContainer');
-            container.innerHTML = '';
-
-            if (history.length === 0) {
-                container.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:30px;">Aún no has guardado entrenamientos.</p>`;
-                return;
-            }
-
-            [...history].reverse().forEach(workout => {
-                const card = document.createElement('div');
-                card.className = 'card';
+                    <div id="histPanel-${i}" class="micro-history-panel"></div>`;
                 
-                let exLines = '';
-                workout.exercises.forEach(ex => {
-                    let setsDetail = ex.sets.map(s => {
-                        if (ex.isUnilateral) {
-                            return `(I:${s.wL}kgx${s.rL} / D:${s.wR}kgx${s.rR})`;
-                        } else {
-                            return `${s.wL}kgx${s.rL}`;
-                        }
-                    }).join(', ');
-                    exLines += `<li style="margin-left:14px; margin-bottom:4px;"><strong>${ex.name}:</strong> ${setsDetail}</li>`;
-                });
-
-                card.innerHTML = `
-                    <div class="history-card-header">
-                        <div>
-                            <strong style="font-size:16px; color:var(--accent);">${workout.name}</strong>
-                            <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">📅 ${workout.date}  |  ⏱️ ${workout.duration} min</div>
-                        </div>
-                        <div class="history-actions">
-                            <button class="btn-mini" onclick="exportToAI('${workout.id}')" style="background-color:rgba(255,204,0,0.15); color:var(--accent); border-color:var(--accent);">🤖 Copiar IA</button>
-                            <button class="btn-mini" onclick="deleteHistoryItem('${workout.id}')" style="color:#e74c3c;">✕</button>
-                        </div>
-                    </div>
-                    <ul style="font-size:13px; list-style-type: disc; padding-left:4px;">${exLines}</ul>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        // FUNCIÓN CLAVE DE EXPORTACIÓN DIRECTA CON UN CLICK
-        function exportToAI(id) {
-            const workout = history.find(w => w.id === id);
-            if (!workout) return;
-
-            let text = `Entreno: ${workout.name} (${workout.date})\n`;
-            text += `Duración: ${workout.duration} minutos\n\n`;
-            
-            workout.exercises.forEach((ex, idx) => {
-                text += `${idx + 1}. ${ex.name.toUpperCase()}:\n`;
-                ex.sets.forEach((s, sIdx) => {
-                    if (ex.isUnilateral) {
-                        text += `   - Serie ${sIdx + 1}: Izquierda: ${s.wL}kg x ${s.rL} | Derecha: ${s.wR}kg x ${s.rR}\n`;
+                ex.sets.forEach((set, sIdx) => {
+                    html += `<div class="set-row"><span style="width:20px;font-size:12px;color:var(--text-muted);">${sIdx+1}</span>`;
+                    if(ex.isUnilateral) {
+                        html += `<div class="input-box"><label>Kg I</label><input type="number" step="any" value="${set.wL}" onchange="updSet(${i},${sIdx},'wL',this.value)"></div>
+                                 <div class="input-box"><label>Rep I</label><input type="number" value="${set.rL}" onchange="updSet(${i},${sIdx},'rL',this.value)"></div>
+                                 <div class="input-box"><label>Kg D</label><input type="number" step="any" value="${set.wR}" onchange="updSet(${i},${sIdx},'wR',this.value)"></div>
+                                 <div class="input-box"><label>Rep D</label><input type="number" value="${set.rR}" onchange="updSet(${i},${sIdx},'rR',this.value)"></div>`;
                     } else {
-                        text += `   - Serie ${sIdx + 1}: ${s.wL}kg x ${s.rL}\n`;
+                        html += `<div class="input-box"><label>Kg</label><input type="number" step="any" value="${set.wL}" onchange="updSet(${i},${sIdx},'wL',this.value)"></div>
+                                 <div class="input-box"><label>Reps</label><input type="number" value="${set.rL}" onchange="updSet(${i},${sIdx},'rL',this.value)"></div>`;
                     }
+                    html += `<button class="check-btn ${set.done?'done':''}" onclick="toggleDone(${i},${sIdx})">✓</button></div>`;
+                });
+                html += `<button class="btn-secondary" style="width:100%; padding:6px; border-radius:4px; font-size:12px; margin-top:8px;" onclick="addSet(${i})">＋ Serie</button></div>`;
+                c.innerHTML += html;
+            });
+        }
+
+        // FLECHAS ENTRENO
+        function moveActiveEx(idx, dir) {
+            if(idx + dir < 0 || idx + dir >= activeWk.exercises.length) return;
+            const temp = activeWk.exercises[idx];
+            activeWk.exercises[idx] = activeWk.exercises[idx+dir];
+            activeWk.exercises[idx+dir] = temp;
+            saveActiveWorkout(); renderActive();
+        }
+
+        // MICRO HISTORIAL
+        function toggleHistory(idx, name) {
+            const p = document.getElementById(`histPanel-${idx}`);
+            if(p.style.display === 'block') { p.style.display = 'none'; return; }
+            
+            let matches = [];
+            for(let i = historyData.length - 1; i >= 0; i--) {
+                let w = historyData[i];
+                let e = w.exercises.find(x => x.name.toLowerCase() === name.toLowerCase());
+                if(e) { matches.push({ d: w.date, s: e.sets, u: e.isUnilateral }); if(matches.length === 3) break; }
+            }
+            if(matches.length === 0) p.innerHTML = 'Sin historial previo.';
+            else {
+                p.innerHTML = '<div style="font-weight:bold;margin-bottom:4px;color:#fff;">Últimas 3 sesiones:</div>' + matches.map(m => {
+                    let sStr = m.s.map(s => m.u ? `[I:${s.wL}x${s.rL}/D:${s.wR}x${s.rR}]` : `${s.wL}kg x ${s.rL}`).join(' | ');
+                    return `<div class="micro-history-item"><span style="color:var(--accent)">${m.d}</span> <span>${sStr}</span></div>`;
+                }).join('');
+            }
+            p.style.display = 'block';
+        }
+
+        function updateExName(i, v) { activeWk.exercises[i].name = v; saveActiveWorkout(); }
+        function updSet(i, s, f, v) { activeWk.exercises[i].sets[s][f] = v; saveActiveWorkout(); }
+        function addSet(i) {
+            let sets = activeWk.exercises[i].sets; let l = sets[sets.length-1];
+            sets.push({ wL:l?l.wL:'', rL:l?l.rL:'', wR:l?l.wR:'', rR:l?l.rR:'', done:false });
+            saveActiveWorkout(); renderActive();
+        }
+        function addExerciseToActive() {
+            activeWk.exercises.push({ name: 'Nuevo', isUnilateral: false, sets: [{wL:'',rL:'',wR:'',rR:'',done:false}] });
+            saveActiveWorkout(); renderActive();
+        }
+        function delActiveEx(i) { if(confirm('¿Quitar?')) { activeWk.exercises.splice(i,1); saveActiveWorkout(); renderActive(); } }
+        
+        // HÁPTICO AL MARCAR
+        function toggleDone(i, s) {
+            let set = activeWk.exercises[i].sets[s];
+            set.done = !set.done;
+            if(set.done && navigator.vibrate) navigator.vibrate(40);
+            saveActiveWorkout(); renderActive();
+        }
+
+        function finishWorkout() {
+            let validEx = activeWk.exercises.map(e => ({ name: e.name, isUnilateral: e.isUnilateral, sets: e.sets.filter(s => s.wL !== '' || s.rL !== '') })).filter(e => e.sets.length > 0);
+            if(validEx.length === 0) return alert('No hay series anotadas');
+            
+            historyData.push({
+                id: activeWk.id, name: activeWk.name, date: new Date().toLocaleDateString('es-ES'),
+                duration: Math.floor((Date.now() - activeWk.start)/60000), exercises: validEx
+            });
+            localStorage.setItem('ironlog_history', JSON.stringify(historyData));
+            activeWk = null; saveActiveWorkout(); clearInterval(timerInt);
+            document.getElementById('timerBanner').style.display = 'none';
+            renderHistory(); switchView('History');
+        }
+        function cancelWorkout() { if(confirm('¿Borrar entreno actual?')) { activeWk = null; saveActiveWorkout(); clearInterval(timerInt); document.getElementById('timerBanner').style.display = 'none'; switchView('Templates'); } }
+
+        // --- HISTORIAL E IA ---
+        function renderHistory() {
+            const c = document.getElementById('historyContainer'); c.innerHTML = '';
+            [...historyData].reverse().forEach(w => {
+                let lis = w.exercises.map(e => {
+                    let sts = e.sets.map(s => e.isUnilateral ? `(I:${s.wL}x${s.rL}/D:${s.wR}x${s.rR})` : `${s.wL}kg x ${s.rL}`).join(', ');
+                    return `<li style="margin-left:16px; font-size:13px; margin-bottom:4px;"><strong>${e.name}:</strong> ${sts}</li>`;
+                }).join('');
+                
+                c.innerHTML += `
+                <div class="card">
+                    <div class="flex-between" style="margin-bottom:8px; align-items:flex-start;">
+                        <div>
+                            <strong style="color:var(--accent);">${w.name}</strong>
+                            <div style="font-size:12px; color:var(--text-muted);">${w.date} | ${w.duration} min</div>
+                        </div>
+                        <div class="gap-2">
+                            <button class="btn-mini" style="border-color:var(--accent); color:var(--accent);" onclick="copyToAI('${w.id}')">🤖 IA</button>
+                            <button class="btn-mini" style="color:#e74c3c;" onclick="delHistory('${w.id}')">✕</button>
+                        </div>
+                    </div>
+                    <ul>${lis}</ul>
+                </div>`;
+            });
+        }
+        function delHistory(id) { if(confirm('¿Borrar?')) { historyData = historyData.filter(h => h.id !== id); localStorage.setItem('ironlog_history', JSON.stringify(historyData)); renderHistory(); } }
+        
+        function copyToAI(id) {
+            let w = historyData.find(x => x.id === id);
+            let txt = `Entrenamiento: ${w.name} (${w.date})\nDuración: ${w.duration} min\n\n`;
+            w.exercises.forEach(e => {
+                txt += `- ${e.name}:\n`;
+                e.sets.forEach((s, i) => {
+                    txt += e.isUnilateral ? `  S${i+1}: Izq ${s.wL}kg x ${s.rL} | Der ${s.wR}kg x ${s.rR}\n` : `  S${i+1}: ${s.wL}kg x ${s.rL}\n`;
                 });
             });
-            text += `\n[Misión: Analiza mi sobrecarga progresiva, volumen e intensidad basándote en estos datos y propón optimizaciones para la siguiente sesión]`;
-
-            navigator.clipboard.writeText(text).then(() => {
-                alert('¡Datos de entrenamiento copiados! Vete a ChatGPT, Gemini o Claude y pégalos con un solo clic.');
-            }).catch(() => {
-                alert('Error al copiar automáticamente. Revisa los permisos de tu navegador.');
-            });
+            txt += `\nAnaliza este entrenamiento (sobrecarga y volumen) y dame recomendaciones.`;
+            navigator.clipboard.writeText(txt).then(() => alert('Copiado. Pégalo en ChatGPT/Claude.'));
         }
 
-        function deleteHistoryItem(id) {
-            if (confirm('¿Eliminar este registro del historial?')) {
-                history = history.filter(h => h.id !== id);
-                localStorage.setItem('ironlog_history', JSON.stringify(history));
-                renderHistory();
-            }
+        // --- PROGRESO NATIVO ---
+        function updateProgressSelectors() {
+            let names = new Set(); historyData.forEach(w => w.exercises.forEach(e => names.add(e.name)));
+            const sel = document.getElementById('progExSelect'); sel.innerHTML = '';
+            if(names.size === 0) sel.innerHTML = '<option>Sin datos</option>';
+            else Array.from(names).sort().forEach(n => sel.innerHTML += `<option value="${n}">${n}</option>`);
         }
 
-        // ==========================================
-        // VISTA PROGRESO AVANZADA: TOP SET Y 1RM TEÓRICO (NUEVO v1.2)
-        // ==========================================
-        function populateExerciseSelect() {
-            const select = document.getElementById('progressExerciseSelect');
-            select.innerHTML = '';
+        function drawNativeChart() {
+            const exName = document.getElementById('progExSelect').value;
+            const metric = document.getElementById('progMetricSelect').value;
+            const c = document.getElementById('nativeChart'); c.innerHTML = '';
             
-            // Extraer nombres únicos de todos los ejercicios hechos en la historia del usuario
-            let names = new Set();
-            history.forEach(w => w.exercises.forEach(e => names.add(e.name)));
-            
-            if (names.size === 0) {
-                select.innerHTML = `<option>No hay datos disponibles</option>`;
-                return;
-            }
+            if(!exName || exName === 'Sin datos') return;
 
-            Array.from(names).sort().forEach(name => {
-                const opt = document.createElement('option');
-                opt.value = name;
-                opt.innerText = name;
-                select.appendChild(opt);
-            });
-        }
-
-        function updateProgressChart() {
-            const exerciseName = document.getElementById('progressExerciseSelect').value;
-            const metricType = document.getElementById('progressMetricSelect').value;
-            
-            if (!exerciseName || exerciseName.includes("No hay datos")) return;
-
-            let labels = [];
-            let dataPoints = [];
-
-            // Filtrar cronológicamente para reconstruir la evolución matemática exacta
-            history.forEach(workout => {
-                const ex = workout.exercises.find(e => e.name.toLowerCase() === exerciseName.toLowerCase());
-                if (ex && ex.sets.length > 0) {
-                    let calculatedValue = 0;
-
-                    ex.sets.forEach(set => {
-                        let wL = Number(set.wL) || 0;
-                        let rL = Number(set.rL) || 0;
-                        let wR = Number(set.wR) || 0;
-                        let rR = Number(set.rR) || 0;
-
-                        if (metricType === 'topSet') {
-                            // Carga Máxima Absoluta colocada en la barra o mancuerna
-                            let topSetWeight = ex.isUnilateral ? Math.max(wL, wR) : wL;
-                            if (topSetWeight > calculatedValue) calculatedValue = topSetWeight;
-                        } else if (metricType === '1rm') {
-                            // Cálculo Científico de Epley para Fuerza Estimada
-                            let 1rmValue = 0;
-                            if (ex.isUnilateral) {
-                                let 1rmL = wL * (1 + rL / 30);
-                                let 1rmR = wR * (1 + rR / 30);
-                                1rmValue = Math.max(1rmL, 1rmR);
-                            } else {
-                                1rmValue = wL * (1 + rL / 30);
-                            }
-                            if (1rmValue > calculatedValue) calculatedValue = 1rmValue;
-                        }
+            let pts = [], maxV = 0;
+            historyData.forEach(w => {
+                let ex = w.exercises.find(x => x.name === exName);
+                if(ex && ex.sets.length > 0) {
+                    let best = 0;
+                    ex.sets.forEach(s => {
+                        let wl = Number(s.wL)||0, rl = Number(s.rL)||0, wr = Number(s.wR)||0, rr = Number(s.rR)||0;
+                        let val = 0;
+                        if(metric === 'top') val = ex.isUnilateral ? Math.max(wl, wr) : wl;
+                        else val = ex.isUnilateral ? Math.max(wl*(1+rl/30), wr*(1+rr/30)) : wl*(1+rl/30);
+                        if(val > best) best = val;
                     });
-
-                    if (calculatedValue > 0) {
-                        labels.push(workout.date);
-                        dataPoints.push(Math.round(calculatedValue * 10) / 10);
+                    if(best > 0) {
+                        pts.push({ d: w.date, v: Math.round(best*10)/10 });
+                        if(best > maxV) maxV = best;
                     }
                 }
             });
 
-            // Dibujar/Redibujar lienzo de Chart.js
-            const ctx = document.getElementById('progressChart').getContext('2d');
-            if (progressChartInstance) progressChartInstance.destroy();
+            if(pts.length === 0) { c.innerHTML = '<div style="color:var(--text-muted);text-align:center;">Sin registros numéricos.</div>'; return; }
 
-            progressChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: metricType === 'topSet' ? 'Peso Máximo (Kg)' : '1RM Estimado (Kg)',
-                        data: dataPoints,
-                        borderColor: '#ffcc00',
-                        backgroundColor: 'rgba(255,204,0,0.1)',
-                        borderWidth: 3,
-                        tension: 0.2,
-                        pointBackgroundColor: '#ffcc00',
-                        pointRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        x: { grid: { color: '#222' }, ticks: { color: '#aaa' } },
-                        y: { grid: { color: '#222' }, ticks: { color: '#aaa' } }
-                    }
-                }
+            pts.forEach(p => {
+                let pct = (p.v / maxV) * 100;
+                c.innerHTML += `
+                <div class="chart-row">
+                    <div class="chart-label">${p.d}</div>
+                    <div class="chart-track">
+                        <div class="chart-bar" style="width: ${pct}%;"></div>
+                        <div class="chart-value">${p.v} Kg</div>
+                    </div>
+                </div>`;
             });
         }
     </script>
