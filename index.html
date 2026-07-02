@@ -23,22 +23,18 @@
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html, body { height:100%; background:var(--bg); color:var(--text); font-family:'DM Sans', sans-serif; overflow:hidden; }
   #app { display:flex; flex-direction:column; height:100dvh; }
-
   #header { padding: calc(var(--safe-top) + 10px) 20px 12px; background:var(--bg); border-bottom:1px solid var(--border); flex-shrink:0; display:flex; align-items:center; justify-content:space-between; }
   #header h1 { font-family:'Bebas Neue', sans-serif; font-size:28px; letter-spacing:3px; color:var(--accent); }
   .subtitle { font-size:11px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; }
-
   #content { flex:1; overflow-y:auto; padding-bottom:calc(80px + var(--safe-bottom)); }
   #nav { position:fixed; bottom:0; left:0; right:0; height:calc(65px + var(--safe-bottom)); background:var(--bg2); border-top:1px solid var(--border); display:flex; padding-top:10px; z-index:100; }
   .nav-btn { flex:1; display:flex; flex-direction:column; align-items:center; background:none; border:none; color:var(--muted); cursor:pointer; }
   .nav-btn.active { color:var(--accent); }
   .nav-btn svg { width:22px; height:22px; margin-bottom:4px; }
   .nav-btn span { font-size:10px; }
-
   .page { display:none; padding:20px; }
   .page.active { display:block; }
   .sec-title { font-family:'Bebas Neue', sans-serif; font-size:22px; letter-spacing:2px; color:var(--accent); margin-bottom:16px; }
-
   .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:12px 20px; border-radius:10px; border:none; cursor:pointer; font-family:'DM Sans', sans-serif; font-weight:600; font-size:14px; transition:all .15s; }
   .btn:active { transform:scale(.97); }
   .btn-primary { background:var(--accent); color:#000; }
@@ -46,25 +42,19 @@
   .btn-ghost { background:var(--bg3); color:var(--text); border:1px solid var(--border); }
   .btn-full { width:100%; margin-bottom:8px; }
   .btn-sm { padding:8px 12px; font-size:12px; border-radius:8px; }
-
   input, select { background:var(--bg3); border:1px solid var(--border); border-radius:10px; color:var(--text); padding:12px; width:100%; outline:none; font-family:'DM Sans', sans-serif; font-size:14px; }
   input:focus, select:focus { border-color:var(--accent); }
   label { font-size:11px; color:var(--muted); text-transform:uppercase; display:block; margin-bottom:6px; }
-
   .timer-bar { background:var(--bg2); border-bottom:1px solid var(--border); padding:10px 20px; display:flex; align-items:center; flex-shrink:0; }
   .timer-display { font-family:'Bebas Neue', sans-serif; font-size:28px; color:var(--accent); letter-spacing:2px; }
-
-  /* EXERCISE BLOCKS */
   .ex-block { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:16px; overflow:hidden; }
   .ex-header { padding:12px 16px; background:rgba(255,255,255,0.03); border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; gap:8px; }
   .ex-name-input { background:none; border:none; color:var(--text); font-weight:600; font-size:15px; flex:1; padding:0; outline:none; width:100%; }
   .ex-body { padding:12px; }
-
   .set-label-row { display:grid; gap:8px; margin-bottom:4px; }
   .set-label-row.bilateral { grid-template-columns:25px 1fr 1fr 40px; }
   .set-label-row.unilateral { grid-template-columns:25px 1fr 1fr 1fr 1fr 40px; }
   .set-label { font-size:9px; color:var(--muted); text-align:center; }
-
   .set-row { display:grid; gap:8px; align-items:center; margin-bottom:8px; }
   .set-row.bilateral { grid-template-columns:25px 1fr 1fr 40px; }
   .set-row.unilateral { grid-template-columns:25px 1fr 1fr 1fr 1fr 40px; }
@@ -74,19 +64,13 @@
   .set-done.checked { background:var(--accent); border-color:var(--accent); }
   .set-done.checked svg { stroke:#000; }
   .set-done svg { width:18px; height:18px; stroke:var(--muted); }
-
-  /* REORDER */
   .reorder-btns { display:flex; flex-direction:column; gap:2px; flex-shrink:0; }
   .reorder-btn { background:var(--bg3); border:1px solid var(--border); color:var(--muted); cursor:pointer; padding:3px 7px; border-radius:5px; font-size:11px; line-height:1.2; transition:all .15s; }
   .reorder-btn:active { color:var(--accent); border-color:var(--accent); }
   .reorder-btn:disabled { opacity:0.2; cursor:default; }
-
-  /* HEADER ACTIONS */
   .ex-header-actions { display:flex; gap:6px; align-items:center; flex-shrink:0; }
   .icon-btn { background:var(--bg3); border:1px solid var(--border); color:var(--muted); cursor:pointer; padding:6px 8px; border-radius:7px; display:flex; align-items:center; transition:all .15s; }
   .icon-btn:active { color:var(--accent); border-color:var(--accent); }
-
-  /* MICRO-HISTORY */
   .micro-history { background:var(--bg3); border-bottom:1px solid var(--border); padding:0 12px; max-height:0; overflow:hidden; transition:max-height .3s ease, padding .3s ease; }
   .micro-history.open { max-height:400px; padding:12px; }
   .micro-h-title { font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; font-weight:600; }
@@ -94,34 +78,24 @@
   .micro-h-session:last-child { margin-bottom:0; padding-bottom:0; border-bottom:none; }
   .micro-h-date { font-size:10px; color:var(--muted); margin-bottom:4px; font-weight:600; }
   .micro-h-set { font-size:12px; color:var(--text); display:flex; justify-content:space-between; padding:2px 0; }
-
-  /* MODAL */
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:200; display:flex; align-items:flex-end; opacity:0; pointer-events:none; transition:opacity .2s; }
   .modal-overlay.open { opacity:1; pointer-events:all; }
   .modal { background:var(--bg2); border-radius:20px 20px 0 0; border-top:1px solid var(--border); padding:24px 20px calc(30px + var(--safe-bottom)); width:100%; max-height:90dvh; overflow-y:auto; transform:translateY(100%); transition:transform .3s cubic-bezier(.32,1.25,.55,1); }
   .modal-overlay.open .modal { transform:translateY(0); }
   .modal-handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
-
-  /* WORKOUT CARDS */
   .workout-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px; position:relative; }
   .workout-details { display:none; margin-top:12px; border-top:1px solid var(--border); padding-top:12px; }
   .workout-card.expanded .workout-details { display:block; }
   .delete-btn { position:absolute; top:12px; right:12px; color:var(--muted2); font-size:22px; background:none; border:none; cursor:pointer; z-index:5; line-height:1; }
   .mini-label { font-size:10px; color:var(--accent); text-transform:uppercase; font-weight:bold; margin-bottom:4px; display:block; }
-
-  /* TEMPLATE CARDS */
   .template-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:12px; }
   .template-chips { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0; }
   .chip { background:var(--bg3); border:1px solid var(--border); border-radius:6px; padding:3px 10px; font-size:11px; color:var(--muted); }
   .template-actions { display:flex; gap:8px; margin-top:10px; }
-
-  /* TEMPLATE EXERCISE ROW */
   .tpl-ex-row { background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:10px; }
   .tpl-ex-controls { display:flex; gap:8px; align-items:center; margin-top:8px; flex-wrap:wrap; }
   .tpl-ex-controls input[type=number] { width:70px; flex-shrink:0; }
   .tpl-ex-reorder { display:flex; flex-direction:column; gap:2px; flex-shrink:0; }
-
-  /* PROGRESS */
   .progress-metric-selector { display:flex; gap:8px; margin:12px 0; }
   .metric-btn { flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); background:var(--bg3); color:var(--muted); cursor:pointer; font-family:'DM Sans', sans-serif; font-size:12px; font-weight:600; text-align:center; transition:all .15s; }
   .metric-btn.active { border-color:var(--accent); color:var(--accent); background:rgba(232,255,60,.06); }
@@ -129,17 +103,15 @@
   .pstat { flex:1; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:12px; text-align:center; }
   .pstat-val { font-family:'Bebas Neue', sans-serif; font-size:22px; color:var(--accent); }
   .pstat-lbl { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-top:2px; }
-
-  /* ACTIVE WORKOUT BANNER */
   .wip-banner { background:linear-gradient(135deg,rgba(232,255,60,.08),transparent); border:1px solid rgba(232,255,60,.3); border-radius:var(--radius); padding:16px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; }
   .wip-name { font-family:'Bebas Neue', sans-serif; font-size:20px; letter-spacing:1px; color:var(--accent); }
-
-  /* EXPORT BTN */
   .export-btn { width:100%; margin-top:12px; margin-bottom:0; }
-
-  /* TOAST */
   .toast { position:fixed; bottom:calc(80px + var(--safe-bottom) + 12px); left:20px; right:20px; background:var(--accent); color:#000; padding:14px 18px; border-radius:12px; font-weight:600; font-size:14px; text-align:center; z-index:500; opacity:0; transform:translateY(10px); transition:all .3s; pointer-events:none; }
   .toast.show { opacity:1; transform:translateY(0); }
+
+  /* DIAGNOSTIC */
+  .diag-box { background:var(--bg3); border:1px solid var(--accent2); border-radius:var(--radius); padding:14px; margin-bottom:12px; }
+  .diag-box pre { font-size:10px; color:var(--text); white-space:pre-wrap; word-break:break-all; max-height:200px; overflow-y:auto; margin-top:8px; }
 
   ::-webkit-scrollbar { width:4px; }
   ::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
@@ -150,33 +122,40 @@
   <div id="header">
     <div><h1>IRONLOG</h1><div class="subtitle">v1.2</div></div>
   </div>
-
   <div class="timer-bar" id="timer-bar" style="display:none">
     <div class="timer-display" id="timer-display">00:00</div>
     <div style="flex:1"></div>
     <button class="btn btn-danger btn-sm" onclick="finishWorkout()">TERMINAR</button>
   </div>
-
   <div id="content">
     <div id="page-home" class="page active">
       <div id="active-workout-banner"></div>
+
+      <!-- DIAGNÓSTICO TEMPORAL -->
+      <div class="diag-box" id="diag-box">
+        <div style="font-size:12px;color:var(--accent2);font-weight:600;margin-bottom:8px">🔍 DIAGNÓSTICO — Borrar tras resolver</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px">Claves encontradas en localStorage:</div>
+        <div id="diag-keys" style="font-size:11px;color:var(--text);margin-bottom:10px"></div>
+        <button class="btn btn-ghost btn-sm" onclick="showDiagDetail()" style="margin-bottom:6px;width:100%">Ver datos de ironlog_workouts</button>
+        <button class="btn btn-ghost btn-sm" onclick="showAllKeys()" style="margin-bottom:6px;width:100%">Ver TODAS las claves guardadas</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('diag-box').style.display='none'" style="width:100%">Ocultar diagnóstico</button>
+        <pre id="diag-output"></pre>
+      </div>
+
       <button class="btn btn-primary btn-full" style="height:60px;font-size:18px;letter-spacing:2px;font-family:'Bebas Neue',sans-serif" onclick="showStartModal()">+ NUEVO ENTRENO</button>
       <div style="height:24px"></div>
       <div class="sec-title">Reciente</div>
       <div id="recent-list"></div>
     </div>
-
     <div id="page-workout" class="page">
       <div id="workout-header-edit" style="margin-bottom:15px"></div>
       <div id="workout-exercises"></div>
       <button class="btn btn-ghost btn-full" style="margin-bottom:0" onclick="addExercisePrompt()">+ Añadir Ejercicio</button>
     </div>
-
     <div id="page-history" class="page">
       <div class="sec-title">Historial</div>
       <div id="history-list"></div>
     </div>
-
     <div id="page-templates" class="page">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
         <div class="sec-title" style="margin:0">Mis Splits</div>
@@ -184,7 +163,6 @@
       </div>
       <div id="templates-list"></div>
     </div>
-
     <div id="page-progress" class="page">
       <div class="sec-title">Progreso</div>
       <select id="progress-ex-select" onchange="renderProgressChart()"></select>
@@ -198,116 +176,76 @@
       <div id="progress-stats"></div>
     </div>
   </div>
-
   <nav id="nav">
-    <button class="nav-btn active" onclick="goTo('home')" id="nav-home">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><span>Inicio</span>
-    </button>
-    <button class="nav-btn" onclick="goTo('workout')" id="nav-workout">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 5v14M18 5v14M3 8h3M18 8h3"/></svg><span>Entreno</span>
-    </button>
-    <button class="nav-btn" onclick="goTo('history')" id="nav-history">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg><span>Historial</span>
-    </button>
-    <button class="nav-btn" onclick="goTo('templates')" id="nav-templates">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Splits</span>
-    </button>
-    <button class="nav-btn" onclick="goTo('progress')" id="nav-progress">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg><span>Progreso</span>
-    </button>
+    <button class="nav-btn active" onclick="goTo('home')" id="nav-home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg><span>Inicio</span></button>
+    <button class="nav-btn" onclick="goTo('workout')" id="nav-workout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 5v14M18 5v14M3 8h3M18 8h3"/></svg><span>Entreno</span></button>
+    <button class="nav-btn" onclick="goTo('history')" id="nav-history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg><span>Historial</span></button>
+    <button class="nav-btn" onclick="goTo('templates')" id="nav-templates"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg><span>Splits</span></button>
+    <button class="nav-btn" onclick="goTo('progress')" id="nav-progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg><span>Progreso</span></button>
   </nav>
 </div>
-
 <div class="toast" id="toast"></div>
 
-<!-- MODAL: Start -->
-<div class="modal-overlay" id="modal-start">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="sec-title">Empezar Entreno</div>
-    <div id="start-templates-list"></div>
-    <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:8px">
-      <label>O empieza en blanco</label>
-      <input type="text" id="custom-workout-name" placeholder="Nombre (ej. Libre)">
-      <button class="btn btn-ghost btn-full" style="margin-top:10px" onclick="startWorkout(null)">ENTRENO LIBRE</button>
-    </div>
-    <button class="btn btn-ghost btn-full" onclick="closeModal('modal-start')">Cancelar</button>
-  </div>
-</div>
-
-<!-- MODAL: Template -->
-<div class="modal-overlay" id="modal-template">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="sec-title" id="template-modal-title">Nuevo Split</div>
-    <div style="margin-bottom:14px">
-      <label>Nombre del split</label>
-      <input type="text" id="tpl-name" placeholder="Ej: Push A, Legs...">
-    </div>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-      <label style="margin:0">Ejercicios</label>
-      <button class="btn btn-ghost btn-sm" onclick="addTplExField()">+ Añadir</button>
-    </div>
-    <div id="tpl-exercises"></div>
-    <button class="btn btn-primary btn-full" onclick="saveTemplate()">GUARDAR SPLIT</button>
-    <button class="btn btn-ghost btn-full" onclick="closeModal('modal-template')">Cancelar</button>
-  </div>
-</div>
-
-<!-- MODAL: Summary -->
-<div class="modal-overlay" id="modal-summary">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="sec-title">¡Sesión Terminada!</div>
-    <div id="summary-data" style="text-align:center;margin:20px 0"></div>
-    <button class="btn btn-primary btn-full" onclick="confirmSaveWorkout()">GUARDAR REGISTRO</button>
-    <button class="btn btn-ghost btn-full" onclick="closeModal('modal-summary')">Seguir entrenando</button>
-    <button class="btn btn-ghost btn-full" style="color:var(--accent2)" onclick="discardWorkout()">Descartar entreno</button>
-  </div>
-</div>
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-start"><div class="modal"><div class="modal-handle"></div><div class="sec-title">Empezar Entreno</div><div id="start-templates-list"></div><div style="border-top:1px solid var(--border);padding-top:16px;margin-top:8px"><label>O empieza en blanco</label><input type="text" id="custom-workout-name" placeholder="Nombre (ej. Libre)"><button class="btn btn-ghost btn-full" style="margin-top:10px" onclick="startWorkout(null)">ENTRENO LIBRE</button></div><button class="btn btn-ghost btn-full" onclick="closeModal('modal-start')">Cancelar</button></div></div>
+<div class="modal-overlay" id="modal-template"><div class="modal"><div class="modal-handle"></div><div class="sec-title" id="template-modal-title">Nuevo Split</div><div style="margin-bottom:14px"><label>Nombre del split</label><input type="text" id="tpl-name" placeholder="Ej: Push A, Legs..."></div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><label style="margin:0">Ejercicios</label><button class="btn btn-ghost btn-sm" onclick="addTplExField()">+ Añadir</button></div><div id="tpl-exercises"></div><button class="btn btn-primary btn-full" onclick="saveTemplate()">GUARDAR SPLIT</button><button class="btn btn-ghost btn-full" onclick="closeModal('modal-template')">Cancelar</button></div></div>
+<div class="modal-overlay" id="modal-summary"><div class="modal"><div class="modal-handle"></div><div class="sec-title">¡Sesión Terminada!</div><div id="summary-data" style="text-align:center;margin:20px 0"></div><button class="btn btn-primary btn-full" onclick="confirmSaveWorkout()">GUARDAR REGISTRO</button><button class="btn btn-ghost btn-full" onclick="closeModal('modal-summary')">Seguir entrenando</button><button class="btn btn-ghost btn-full" style="color:var(--accent2)" onclick="discardWorkout()">Descartar entreno</button></div></div>
 
 <script>
-// ============ MIGRACIÓN — compatible con todos los formatos anteriores ============
+// ============ DIAGNÓSTICO ============
+function showDiagDetail() {
+  const raw = localStorage.getItem('ironlog_workouts');
+  const out = document.getElementById('diag-output');
+  if (!raw) { out.textContent = 'ironlog_workouts: VACÍO / NO EXISTE'; return; }
+  try {
+    const data = JSON.parse(raw);
+    out.textContent = `ironlog_workouts: ${data.length} entrenos\n\n` +
+      data.map((w,i) => `[${i}] id:${w.id} | nombre:${w.name} | fecha:${w.date} | ejercicios:${(w.exercises||[]).length}`).join('\n');
+  } catch(e) {
+    out.textContent = 'ERROR al parsear: ' + e.message + '\n\nRAW:\n' + raw.substring(0,500);
+  }
+}
+
+function showAllKeys() {
+  const out = document.getElementById('diag-output');
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    const v = localStorage.getItem(k);
+    keys.push(`"${k}" → ${v ? v.substring(0,80)+'...' : 'vacío'}`);
+  }
+  out.textContent = keys.length ? keys.join('\n') : 'localStorage completamente vacío';
+}
+
+function initDiag() {
+  const keysEl = document.getElementById('diag-keys');
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) keys.push(localStorage.key(i));
+  keysEl.textContent = keys.length ? keys.join(', ') : '⚠️ localStorage VACÍO — no hay ninguna clave guardada';
+}
+
+// ============ MIGRACIÓN ============
 function migrateData() {
   const raw = localStorage.getItem('ironlog_workouts');
   if (!raw) return;
   let data;
   try { data = JSON.parse(raw); } catch(e) { return; }
   if (!Array.isArray(data)) return;
-
   let changed = false;
   data = data.map(w => {
-    // Corregir fechas inválidas
-    if (!w.date || isNaN(new Date(w.date).getTime())) {
-      w.date = new Date(parseInt(w.id) || Date.now()).toISOString();
-      changed = true;
-    }
-    // Asegurar que id sea string para comparaciones seguras
-    if (typeof w.id === 'number') {
-      w.id = String(w.id);
-      changed = true;
-    }
-    // Migrar sets con formato antiguo weight/reps → wL/rL
-    w.exercises = (w.exercises || []).map(ex => {
-      ex.sets = (ex.sets || []).map(s => {
-        if (s.weight !== undefined && s.wL === undefined) {
-          s.wL = s.weight; s.rL = s.reps;
-          s.wR = ''; s.rR = '';
-          delete s.weight; delete s.reps;
-          changed = true;
-        }
-        // Asegurar campos wR/rR existen aunque sea vacíos
-        if (s.wR === undefined) { s.wR = ''; s.rR = ''; changed = true; }
+    if (!w.date || isNaN(new Date(w.date).getTime())) { w.date = new Date(parseInt(w.id)||Date.now()).toISOString(); changed=true; }
+    if (typeof w.id === 'number') { w.id = String(w.id); changed=true; }
+    w.exercises = (w.exercises||[]).map(ex => {
+      ex.sets = (ex.sets||[]).map(s => {
+        if (s.weight !== undefined && s.wL === undefined) { s.wL=s.weight; s.rL=s.reps; s.wR=''; s.rR=''; delete s.weight; delete s.reps; changed=true; }
+        if (s.wR === undefined) { s.wR=''; s.rR=''; changed=true; }
         return s;
       });
       return ex;
     });
     return w;
   });
-
-  if (changed) {
-    localStorage.setItem('ironlog_workouts', JSON.stringify(data));
-  }
+  if (changed) localStorage.setItem('ironlog_workouts', JSON.stringify(data));
 }
 migrateData();
 
@@ -321,20 +259,18 @@ let state = {
   editingTemplateId: null
 };
 
-// ============ INIT ============
 window.onload = () => {
+  initDiag();
   if (state.current) startTimerUI();
   renderHome();
 };
 
-// ============ SYNC ============
 function sync() {
   localStorage.setItem('ironlog_workouts', JSON.stringify(state.workouts));
   localStorage.setItem('ironlog_templates', JSON.stringify(state.templates));
   localStorage.setItem('ironlog_current', JSON.stringify(state.current));
 }
 
-// ============ NAV ============
 function goTo(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -350,59 +286,41 @@ function goTo(page) {
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-overlay').forEach(m => {
-  m.addEventListener('click', e => { if (e.target===m) m.classList.remove('open'); });
+  m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); });
 });
 
-// ============ TOAST ============
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2000);
 }
-
-// ============ HAPTIC ============
 function haptic() { if (navigator.vibrate) navigator.vibrate(30); }
-
-// ============ VOLUME ============
 function calculateVolume(exs) {
-  return exs.reduce((acc, ex) => acc + (ex.sets||[]).filter(s=>s.done).reduce((sa, s) =>
+  return (exs||[]).reduce((acc,ex) => acc + (ex.sets||[]).filter(s=>s.done).reduce((sa,s) =>
     sa + ((parseFloat(s.wL)||0)*(parseInt(s.rL)||0)) + ((parseFloat(s.wR)||0)*(parseInt(s.rR)||0)), 0), 0);
 }
 
-// ============ HOME ============
 function renderHome() {
   const banner = document.getElementById('active-workout-banner');
-  if (state.current) {
-    banner.innerHTML = `<div class="wip-banner">
-      <div><div class="wip-name">${state.current.name}</div><div style="font-size:12px;color:var(--muted)">Entreno en curso</div></div>
-      <button class="btn btn-primary btn-sm" onclick="goTo('workout')">Continuar →</button>
-    </div>`;
-  } else { banner.innerHTML = ''; }
-
+  banner.innerHTML = state.current
+    ? `<div class="wip-banner"><div><div class="wip-name">${state.current.name}</div><div style="font-size:12px;color:var(--muted)">Entreno en curso</div></div><button class="btn btn-primary btn-sm" onclick="goTo('workout')">Continuar →</button></div>`
+    : '';
   const recent = state.workouts.slice(-3).reverse();
-  document.getElementById('recent-list').innerHTML = recent.map(w => workoutCardHTML(w)).join('')
+  document.getElementById('recent-list').innerHTML = recent.map(w=>workoutCardHTML(w)).join('')
     || '<div style="color:var(--muted);text-align:center;padding:40px 0">Sin entrenos aún.</div>';
 }
 
-// ============ WORKOUT CARD ============
 function workoutCardHTML(w) {
   const vol = Math.round(calculateVolume(w.exercises));
   const dateStr = new Date(w.date).toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'});
   const wid = String(w.id);
-
   const detailsHTML = (w.exercises||[]).map(ex => {
-    const doneSets = (ex.sets||[]).filter(s=>s.done);
-    if (!doneSets.length) return '';
-    const setsHTML = doneSets.map((s,i) =>
-      `<div style="font-size:12px;color:var(--muted)">
-        ${ex.unilateral
-          ? `Serie ${i+1}: Izq ${s.wL||'—'}kg×${s.rL||'—'} · Der ${s.wR||'—'}kg×${s.rR||'—'}`
-          : `Serie ${i+1}: ${s.wL||'—'}kg × ${s.rL||'—'}`}
-      </div>`).join('');
-    return `<div style="margin-bottom:10px"><div class="mini-label">${ex.name}${ex.unilateral?' ⟷':''}</div>${setsHTML}</div>`;
+    const done = (ex.sets||[]).filter(s=>s.done);
+    if (!done.length) return '';
+    return `<div style="margin-bottom:10px"><div class="mini-label">${ex.name}${ex.unilateral?' ⟷':''}</div>
+      ${done.map((s,i)=>`<div style="font-size:12px;color:var(--muted)">${ex.unilateral?`Serie ${i+1}: Izq ${s.wL||'—'}kg×${s.rL||'—'} · Der ${s.wR||'—'}kg×${s.rR||'—'}`:`Serie ${i+1}: ${s.wL||'—'}kg × ${s.rL||'—'}`}</div>`).join('')}
+    </div>`;
   }).join('');
-
   return `<div class="workout-card">
     <button class="delete-btn" onclick="event.stopPropagation();deleteHistoryItem('${wid}')">×</button>
     <div style="cursor:pointer" onclick="this.parentElement.classList.toggle('expanded')">
@@ -415,8 +333,7 @@ function workoutCardHTML(w) {
         <div><div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--accent)">${w.duration||'—'}</div><div style="font-size:9px;color:var(--muted)">TIEMPO</div></div>
         <div><div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--accent)">${(w.exercises||[]).length}</div><div style="font-size:9px;color:var(--muted)">EJERCICIOS</div></div>
       </div>
-      <div class="workout-details">
-        ${detailsHTML}
+      <div class="workout-details">${detailsHTML}
         <button class="btn btn-ghost btn-sm export-btn" onclick="event.stopPropagation();exportWorkout('${wid}')">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
           Exportar para IA
@@ -426,9 +343,8 @@ function workoutCardHTML(w) {
   </div>`;
 }
 
-// ============ EXPORT FOR AI ============
 function exportWorkout(id) {
-  const w = state.workouts.find(x => String(x.id) === String(id));
+  const w = state.workouts.find(x=>String(x.id)===String(id));
   if (!w) return;
   const date = new Date(w.date).toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   const vol = Math.round(calculateVolume(w.exercises));
@@ -436,33 +352,22 @@ function exportWorkout(id) {
   (w.exercises||[]).forEach(ex => {
     text += `── ${ex.name.toUpperCase()}${ex.unilateral?' (UNILATERAL)':''} ──\n`;
     (ex.sets||[]).filter(s=>s.done).forEach((s,i) => {
-      if (ex.unilateral) text += `  Serie ${i+1}: Izquierda ${s.wL||0}kg × ${s.rL||0} rep | Derecha ${s.wR||0}kg × ${s.rR||0} rep\n`;
-      else text += `  Serie ${i+1}: ${s.wL||0}kg × ${s.rL||0} rep\n`;
+      text += ex.unilateral
+        ? `  Serie ${i+1}: Izquierda ${s.wL||0}kg × ${s.rL||0} rep | Derecha ${s.wR||0}kg × ${s.rR||0} rep\n`
+        : `  Serie ${i+1}: ${s.wL||0}kg × ${s.rL||0} rep\n`;
     });
     text += '\n';
   });
   text += `---\nGenerado por IRONLOG v1.2`;
   navigator.clipboard.writeText(text)
-    .then(() => showToast('✓ Copiado al portapapeles'))
-    .catch(() => {
-      const ta = document.createElement('textarea');
-      ta.value = text; document.body.appendChild(ta); ta.select();
-      document.execCommand('copy'); document.body.removeChild(ta);
-      showToast('✓ Copiado al portapapeles');
-    });
+    .then(()=>showToast('✓ Copiado al portapapeles'))
+    .catch(()=>{ const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); showToast('✓ Copiado al portapapeles'); });
 }
 
-// ============ START MODAL ============
 function showStartModal() {
-  const list = document.getElementById('start-templates-list');
-  list.innerHTML = state.templates.length
-    ? state.templates.map(t =>
-        `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:8px">
-          <div><div style="font-family:'Bebas Neue',sans-serif;font-size:18px">${t.name}</div>
-          <div style="font-size:11px;color:var(--muted)">${(t.exercises||[]).length} ejercicios</div></div>
-          <button class="btn btn-primary btn-sm" onclick="startWorkout('${t.id}')">Usar →</button>
-        </div>`).join('')
-    : `<div style="font-size:13px;color:var(--muted);margin-bottom:16px">💡 Crea splits en <strong style="color:var(--accent)">Splits</strong> para usarlos aquí.</div>`;
+  document.getElementById('start-templates-list').innerHTML = state.templates.length
+    ? state.templates.map(t=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:8px"><div><div style="font-family:'Bebas Neue',sans-serif;font-size:18px">${t.name}</div><div style="font-size:11px;color:var(--muted)">${(t.exercises||[]).length} ejercicios</div></div><button class="btn btn-primary btn-sm" onclick="startWorkout('${t.id}')">Usar →</button></div>`).join('')
+    : `<div style="font-size:13px;color:var(--muted);margin-bottom:16px">💡 Crea splits en <strong style="color:var(--accent)">Splits</strong>.</div>`;
   document.getElementById('custom-workout-name').value = '';
   openModal('modal-start');
 }
@@ -471,373 +376,179 @@ function startWorkout(templateId) {
   let name = document.getElementById('custom-workout-name').value || 'Entreno Libre';
   let exercises = [];
   if (templateId) {
-    const t = state.templates.find(tpl => tpl.id===templateId);
-    if (t) {
-      name = t.name;
-      exercises = (t.exercises||[]).map(ex => ({
-        name: ex.name, unilateral: ex.unilateral||false,
-        sets: Array.from({length: ex.setsCount||3}, () => ({wL:'',rL:'',wR:'',rR:'',done:false}))
-      }));
-    }
+    const t = state.templates.find(tpl=>tpl.id===templateId);
+    if (t) { name=t.name; exercises=(t.exercises||[]).map(ex=>({ name:ex.name, unilateral:ex.unilateral||false, sets:Array.from({length:ex.setsCount||3},()=>({wL:'',rL:'',wR:'',rR:'',done:false})) })); }
   }
-  state.current = { id: String(Date.now()), name, startTime: Date.now(), exercises };
+  state.current = { id:String(Date.now()), name, startTime:Date.now(), exercises };
   sync(); closeModal('modal-start'); startTimerUI(); goTo('workout');
 }
 
-// ============ TIMER ============
 function startTimerUI() {
   document.getElementById('timer-bar').style.display = 'flex';
   if (state.timerIdx) clearInterval(state.timerIdx);
   state.timerIdx = setInterval(() => {
     if (!state.current) return;
     const diff = Math.floor((Date.now()-state.current.startTime)/1000);
-    document.getElementById('timer-display').innerText =
-      `${Math.floor(diff/60)}:${(diff%60).toString().padStart(2,'0')}`;
+    document.getElementById('timer-display').innerText = `${Math.floor(diff/60)}:${(diff%60).toString().padStart(2,'0')}`;
   }, 1000);
 }
 
-// ============ ACTIVE WORKOUT ============
 function renderWorkoutPage() {
   const container = document.getElementById('workout-exercises');
-  if (!state.current) {
-    container.innerHTML = `<div style="text-align:center;color:var(--muted);margin-top:40px">No hay entreno activo.</div>`;
-    document.getElementById('workout-header-edit').innerHTML = '';
-    return;
-  }
-  document.getElementById('workout-header-edit').innerHTML =
-    `<input type="text" value="${state.current.name}" oninput="state.current.name=this.value;sync()"
-      style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--accent);background:none;border:none;padding:0;width:100%">`;
-
+  if (!state.current) { container.innerHTML=`<div style="text-align:center;color:var(--muted);margin-top:40px">No hay entreno activo.</div>`; document.getElementById('workout-header-edit').innerHTML=''; return; }
+  document.getElementById('workout-header-edit').innerHTML=`<input type="text" value="${state.current.name}" oninput="state.current.name=this.value;sync()" style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--accent);background:none;border:none;padding:0;width:100%">`;
   const total = state.current.exercises.length;
-  container.innerHTML = state.current.exercises.map((ex, ei) => {
+  container.innerHTML = state.current.exercises.map((ex,ei) => {
     const isUni = ex.unilateral;
     const labelsHTML = isUni
       ? `<div class="set-label-row unilateral"><div></div><div class="set-label">Kg Izq</div><div class="set-label">Rep Izq</div><div class="set-label">Kg Der</div><div class="set-label">Rep Der</div><div></div></div>`
       : `<div class="set-label-row bilateral"><div></div><div class="set-label">Peso (kg)</div><div class="set-label">Reps</div><div></div></div>`;
-
     const setsHTML = (ex.sets||[]).map((s,si) => isUni
-      ? `<div class="set-row unilateral">
-          <div class="set-num">${si+1}</div>
-          <input type="number" class="set-input" value="${s.wL}" placeholder="kg" oninput="updateSet(${ei},${si},'wL',this.value)">
-          <input type="number" class="set-input" value="${s.rL}" placeholder="rep" oninput="updateSet(${ei},${si},'rL',this.value)">
-          <input type="number" class="set-input" value="${s.wR}" placeholder="kg" oninput="updateSet(${ei},${si},'wR',this.value)">
-          <input type="number" class="set-input" value="${s.rR}" placeholder="rep" oninput="updateSet(${ei},${si},'rR',this.value)">
-          <button class="set-done ${s.done?'checked':''}" onclick="toggleSet(${ei},${si})">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20,6 9,17 4,12"/></svg>
-          </button>
-        </div>`
-      : `<div class="set-row bilateral">
-          <div class="set-num">${si+1}</div>
-          <input type="number" class="set-input" value="${s.wL}" placeholder="kg" oninput="updateSet(${ei},${si},'wL',this.value)">
-          <input type="number" class="set-input" value="${s.rL}" placeholder="reps" oninput="updateSet(${ei},${si},'rL',this.value)">
-          <button class="set-done ${s.done?'checked':''}" onclick="toggleSet(${ei},${si})">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20,6 9,17 4,12"/></svg>
-          </button>
-        </div>`).join('');
-
-    const microId = `micro-${ei}`;
-
-    return `<div class="ex-block">
-      <div class="ex-header">
-        <input type="text" class="ex-name-input" value="${ex.name}" oninput="state.current.exercises[${ei}].name=this.value;sync()">
-        <div class="ex-header-actions">
-          <div class="reorder-btns">
-            <button class="reorder-btn" onclick="moveEx(${ei},-1)" ${ei===0?'disabled':''}>▲</button>
-            <button class="reorder-btn" onclick="moveEx(${ei},1)" ${ei===total-1?'disabled':''}>▼</button>
-          </div>
-          <button class="icon-btn" onclick="toggleMicroHistory(${ei})" title="Ver historial">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
-          </button>
-          <button class="icon-btn" onclick="loadPreviousWeights(${ei})" title="Cargar pesos anteriores">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
-          </button>
-          <button class="icon-btn" onclick="deleteExFromWorkout(${ei})" style="color:var(--accent2)">×</button>
-        </div>
-      </div>
-      <div class="micro-history" id="${microId}"></div>
-      <div class="ex-body">
-        ${labelsHTML}
-        ${setsHTML}
-        <button class="btn btn-ghost btn-sm btn-full" style="margin-top:10px;margin-bottom:0" onclick="addSetToEx(${ei})">+ Serie</button>
-      </div>
-    </div>`;
+      ? `<div class="set-row unilateral"><div class="set-num">${si+1}</div><input type="number" class="set-input" value="${s.wL}" placeholder="kg" oninput="updateSet(${ei},${si},'wL',this.value)"><input type="number" class="set-input" value="${s.rL}" placeholder="rep" oninput="updateSet(${ei},${si},'rL',this.value)"><input type="number" class="set-input" value="${s.wR}" placeholder="kg" oninput="updateSet(${ei},${si},'wR',this.value)"><input type="number" class="set-input" value="${s.rR}" placeholder="rep" oninput="updateSet(${ei},${si},'rR',this.value)"><button class="set-done ${s.done?'checked':''}" onclick="toggleSet(${ei},${si})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20,6 9,17 4,12"/></svg></button></div>`
+      : `<div class="set-row bilateral"><div class="set-num">${si+1}</div><input type="number" class="set-input" value="${s.wL}" placeholder="kg" oninput="updateSet(${ei},${si},'wL',this.value)"><input type="number" class="set-input" value="${s.rL}" placeholder="reps" oninput="updateSet(${ei},${si},'rL',this.value)"><button class="set-done ${s.done?'checked':''}" onclick="toggleSet(${ei},${si})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20,6 9,17 4,12"/></svg></button></div>`).join('');
+    return `<div class="ex-block"><div class="ex-header"><input type="text" class="ex-name-input" value="${ex.name}" oninput="state.current.exercises[${ei}].name=this.value;sync()"><div class="ex-header-actions"><div class="reorder-btns"><button class="reorder-btn" onclick="moveEx(${ei},-1)" ${ei===0?'disabled':''}>▲</button><button class="reorder-btn" onclick="moveEx(${ei},1)" ${ei===total-1?'disabled':''}>▼</button></div><button class="icon-btn" onclick="toggleMicroHistory(${ei})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></button><button class="icon-btn" onclick="loadPreviousWeights(${ei})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></button><button class="icon-btn" onclick="deleteExFromWorkout(${ei})" style="color:var(--accent2)">×</button></div></div><div class="micro-history" id="micro-${ei}"></div><div class="ex-body">${labelsHTML}${setsHTML}<button class="btn btn-ghost btn-sm btn-full" style="margin-top:10px;margin-bottom:0" onclick="addSetToEx(${ei})">+ Serie</button></div></div>`;
   }).join('');
 }
 
-// ============ MICRO-HISTORY ============
 function buildMicroHistory(exName) {
   const name = exName.toLowerCase().trim();
   const sessions = [];
-  for (let i = state.workouts.length-1; i >= 0 && sessions.length < 3; i--) {
-    const w = state.workouts[i];
-    const ex = (w.exercises||[]).find(e => e.name.toLowerCase().trim()===name);
+  for (let i=state.workouts.length-1; i>=0 && sessions.length<3; i--) {
+    const ex = (state.workouts[i].exercises||[]).find(e=>e.name.toLowerCase().trim()===name);
     if (!ex) continue;
     const done = (ex.sets||[]).filter(s=>s.done);
     if (!done.length) continue;
-    sessions.push({ date: w.date, sets: done, unilateral: ex.unilateral });
+    sessions.push({date:state.workouts[i].date, sets:done, unilateral:ex.unilateral});
   }
   if (!sessions.length) return `<div class="micro-h-title">Sin historial para este ejercicio</div>`;
-  return `<div class="micro-h-title">📋 Últimas sesiones</div>` + sessions.map(s => {
-    const dateStr = new Date(s.date).toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'});
-    const setsHTML = s.sets.map((set,i) => s.unilateral
-      ? `<div class="micro-h-set"><span>Serie ${i+1}</span><span>Izq ${set.wL||0}kg×${set.rL||0} · Der ${set.wR||0}kg×${set.rR||0}</span></div>`
-      : `<div class="micro-h-set"><span>Serie ${i+1}</span><span>${set.wL||0}kg × ${set.rL||0}</span></div>`).join('');
-    return `<div class="micro-h-session"><div class="micro-h-date">${dateStr}</div>${setsHTML}</div>`;
+  return `<div class="micro-h-title">📋 Últimas sesiones</div>` + sessions.map(s=>{
+    const d = new Date(s.date).toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'});
+    return `<div class="micro-h-session"><div class="micro-h-date">${d}</div>${s.sets.map((set,i)=>s.unilateral?`<div class="micro-h-set"><span>Serie ${i+1}</span><span>Izq ${set.wL||0}kg×${set.rL||0} · Der ${set.wR||0}kg×${set.rR||0}</span></div>`:`<div class="micro-h-set"><span>Serie ${i+1}</span><span>${set.wL||0}kg × ${set.rL||0}</span></div>`).join('')}</div>`;
   }).join('');
 }
 
 function toggleMicroHistory(ei) {
   const el = document.getElementById(`micro-${ei}`);
   if (!el) return;
-  const isOpen = el.classList.contains('open');
-  if (!isOpen) el.innerHTML = buildMicroHistory(state.current.exercises[ei].name);
+  if (!el.classList.contains('open')) el.innerHTML = buildMicroHistory(state.current.exercises[ei].name);
   el.classList.toggle('open');
 }
 
-// ============ REORDER ============
-function moveEx(ei, dir) {
-  const exs = state.current.exercises;
-  const newIdx = ei+dir;
-  if (newIdx<0 || newIdx>=exs.length) return;
-  [exs[ei], exs[newIdx]] = [exs[newIdx], exs[ei]];
-  sync(); renderWorkoutPage();
-}
-
-// ============ SET ACTIONS ============
-function updateSet(ei, si, field, val) { state.current.exercises[ei].sets[si][field]=val; sync(); }
-function toggleSet(ei, si) {
-  state.current.exercises[ei].sets[si].done = !state.current.exercises[ei].sets[si].done;
-  haptic(); sync(); renderWorkoutPage();
-}
+function moveEx(ei,dir) { const exs=state.current.exercises; const n=ei+dir; if(n<0||n>=exs.length)return; [exs[ei],exs[n]]=[exs[n],exs[ei]]; sync(); renderWorkoutPage(); }
+function updateSet(ei,si,field,val) { state.current.exercises[ei].sets[si][field]=val; sync(); }
+function toggleSet(ei,si) { state.current.exercises[ei].sets[si].done=!state.current.exercises[ei].sets[si].done; haptic(); sync(); renderWorkoutPage(); }
 function addSetToEx(ei) { state.current.exercises[ei].sets.push({wL:'',rL:'',wR:'',rR:'',done:false}); sync(); renderWorkoutPage(); }
-function deleteExFromWorkout(ei) {
-  if (confirm('¿Quitar ejercicio?')) { state.current.exercises.splice(ei,1); sync(); renderWorkoutPage(); }
-}
+function deleteExFromWorkout(ei) { if(confirm('¿Quitar ejercicio?')) { state.current.exercises.splice(ei,1); sync(); renderWorkoutPage(); } }
 function loadPreviousWeights(ei) {
-  const name = state.current.exercises[ei].name.toLowerCase().trim();
-  for (let i=state.workouts.length-1; i>=0; i--) {
-    const prevEx = (state.workouts[i].exercises||[]).find(e=>e.name.toLowerCase().trim()===name);
-    if (prevEx) {
-      state.current.exercises[ei].sets = prevEx.sets.map(s=>({...s,done:false}));
-      sync(); renderWorkoutPage(); return;
-    }
+  const name=state.current.exercises[ei].name.toLowerCase().trim();
+  for(let i=state.workouts.length-1;i>=0;i--) {
+    const p=(state.workouts[i].exercises||[]).find(e=>e.name.toLowerCase().trim()===name);
+    if(p){state.current.exercises[ei].sets=p.sets.map(s=>({...s,done:false}));sync();renderWorkoutPage();return;}
   }
   showToast('Sin datos anteriores para este ejercicio');
 }
 function addExercisePrompt() {
-  const name = prompt('Nombre del ejercicio:');
-  if (!name) return;
-  const uni = confirm('¿Es unilateral (brazo/pierna individual)?');
-  state.current.exercises.push({ name, unilateral:uni, sets:[{wL:'',rL:'',wR:'',rR:'',done:false}] });
+  const name=prompt('Nombre del ejercicio:'); if(!name)return;
+  const uni=confirm('¿Es unilateral?');
+  state.current.exercises.push({name,unilateral:uni,sets:[{wL:'',rL:'',wR:'',rR:'',done:false}]});
   sync(); renderWorkoutPage();
 }
 
-// ============ FINISH ============
 function finishWorkout() {
-  const vol = Math.round(calculateVolume(state.current.exercises));
-  const diff = Math.floor((Date.now()-state.current.startTime)/1000);
-  document.getElementById('summary-data').innerHTML = `
-    <div style="font-size:48px;font-family:'Bebas Neue',sans-serif;color:var(--accent)">${vol}kg</div>
-    <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Volumen total</div>
-    <div style="margin-top:12px;font-size:16px;color:var(--muted)">${Math.floor(diff/60)}:${(diff%60).toString().padStart(2,'0')} · ${state.current.exercises.length} ejercicios</div>`;
+  const vol=Math.round(calculateVolume(state.current.exercises));
+  const diff=Math.floor((Date.now()-state.current.startTime)/1000);
+  document.getElementById('summary-data').innerHTML=`<div style="font-size:48px;font-family:'Bebas Neue',sans-serif;color:var(--accent)">${vol}kg</div><div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Volumen total</div><div style="margin-top:12px;font-size:16px;color:var(--muted)">${Math.floor(diff/60)}:${(diff%60).toString().padStart(2,'0')} · ${state.current.exercises.length} ejercicios</div>`;
   openModal('modal-summary');
 }
-
 function confirmSaveWorkout() {
-  const diff = Math.floor((Date.now()-state.current.startTime)/1000);
-  state.current.duration = `${Math.floor(diff/60)} min`;
-  state.workouts.push(state.current);
-  state.current = null; sync();
+  const diff=Math.floor((Date.now()-state.current.startTime)/1000);
+  state.current.duration=`${Math.floor(diff/60)} min`;
+  state.workouts.push(state.current); state.current=null; sync();
   clearInterval(state.timerIdx); document.getElementById('timer-bar').style.display='none';
   closeModal('modal-summary'); goTo('home');
 }
-
 function discardWorkout() {
-  if (!confirm('¿Descartar el entreno? Se perderán los datos.')) return;
+  if(!confirm('¿Descartar?'))return;
   state.current=null; sync();
   clearInterval(state.timerIdx); document.getElementById('timer-bar').style.display='none';
   closeModal('modal-summary'); goTo('home');
 }
 
-// ============ HISTORY ============
 function renderHistory() {
-  document.getElementById('history-list').innerHTML = [...state.workouts].reverse().map(w=>workoutCardHTML(w)).join('')
-    || '<div style="color:var(--muted);text-align:center;padding:40px 0">Historial vacío.</div>';
+  document.getElementById('history-list').innerHTML=[...state.workouts].reverse().map(w=>workoutCardHTML(w)).join('')||'<div style="color:var(--muted);text-align:center;padding:40px 0">Historial vacío.</div>';
 }
 function deleteHistoryItem(id) {
-  if (!confirm('¿Eliminar?')) return;
-  state.workouts = state.workouts.filter(w=>String(w.id)!==String(id));
-  sync(); renderHistory(); renderHome();
+  if(!confirm('¿Eliminar?'))return;
+  state.workouts=state.workouts.filter(w=>String(w.id)!==String(id)); sync(); renderHistory(); renderHome();
 }
 
-// ============ TEMPLATES ============
 function openTemplateModal(id=null) {
-  state.editingTemplateId = id;
-  document.getElementById('tpl-exercises').innerHTML = '';
-  if (id) {
-    const t = state.templates.find(tpl=>tpl.id===id);
-    document.getElementById('tpl-name').value = t.name;
-    document.getElementById('template-modal-title').innerText = 'Editar Split';
-    (t.exercises||[]).forEach(ex => addTplExField(ex.name, ex.setsCount, ex.unilateral));
-  } else {
-    document.getElementById('tpl-name').value = '';
-    document.getElementById('template-modal-title').innerText = 'Nuevo Split';
-    addTplExField(); addTplExField(); addTplExField();
-  }
+  state.editingTemplateId=id; document.getElementById('tpl-exercises').innerHTML='';
+  if(id){const t=state.templates.find(tpl=>tpl.id===id);document.getElementById('tpl-name').value=t.name;document.getElementById('template-modal-title').innerText='Editar Split';(t.exercises||[]).forEach(ex=>addTplExField(ex.name,ex.setsCount,ex.unilateral));}
+  else{document.getElementById('tpl-name').value='';document.getElementById('template-modal-title').innerText='Nuevo Split';addTplExField();addTplExField();addTplExField();}
   openModal('modal-template');
 }
-
-function addTplExField(name='', sets=3, uni=false) {
-  const container = document.getElementById('tpl-exercises');
-  const div = document.createElement('div');
-  div.className = 'tpl-ex-row';
-  div.innerHTML = `
-    <input type="text" placeholder="Ejercicio" class="tpl-ex-name" value="${name}">
-    <div class="tpl-ex-controls">
-      <div class="tpl-ex-reorder">
-        <button class="reorder-btn" onclick="moveTplEx(this,-1)">▲</button>
-        <button class="reorder-btn" onclick="moveTplEx(this,1)">▼</button>
-      </div>
-      <input type="number" placeholder="Series" class="tpl-ex-sets" value="${sets}" min="1" max="20">
-      <label style="margin:0;display:flex;align-items:center;gap:5px;white-space:nowrap;font-size:12px">
-        <input type="checkbox" class="tpl-ex-uni" ${uni?'checked':''} style="width:auto"> Unilateral
-      </label>
-      <button onclick="this.closest('.tpl-ex-row').remove()" style="background:none;border:none;color:var(--accent2);font-size:20px;cursor:pointer;flex-shrink:0">×</button>
-    </div>`;
-  container.appendChild(div);
+function addTplExField(name='',sets=3,uni=false) {
+  const div=document.createElement('div'); div.className='tpl-ex-row';
+  div.innerHTML=`<input type="text" placeholder="Ejercicio" class="tpl-ex-name" value="${name}"><div class="tpl-ex-controls"><div class="tpl-ex-reorder"><button class="reorder-btn" onclick="moveTplEx(this,-1)">▲</button><button class="reorder-btn" onclick="moveTplEx(this,1)">▼</button></div><input type="number" placeholder="Series" class="tpl-ex-sets" value="${sets}" min="1" max="20"><label style="margin:0;display:flex;align-items:center;gap:5px;white-space:nowrap;font-size:12px"><input type="checkbox" class="tpl-ex-uni" ${uni?'checked':''} style="width:auto"> Unilateral</label><button onclick="this.closest('.tpl-ex-row').remove()" style="background:none;border:none;color:var(--accent2);font-size:20px;cursor:pointer;flex-shrink:0">×</button></div>`;
+  document.getElementById('tpl-exercises').appendChild(div);
 }
-
-function moveTplEx(btn, dir) {
-  const row = btn.closest('.tpl-ex-row');
-  const container = document.getElementById('tpl-exercises');
-  const rows = [...container.querySelectorAll('.tpl-ex-row')];
-  const idx = rows.indexOf(row);
-  const newIdx = idx+dir;
-  if (newIdx<0 || newIdx>=rows.length) return;
-  if (dir===-1) container.insertBefore(row, rows[newIdx]);
-  else container.insertBefore(rows[newIdx], row);
+function moveTplEx(btn,dir) {
+  const row=btn.closest('.tpl-ex-row'); const container=document.getElementById('tpl-exercises');
+  const rows=[...container.querySelectorAll('.tpl-ex-row')]; const idx=rows.indexOf(row); const n=idx+dir;
+  if(n<0||n>=rows.length)return;
+  if(dir===-1)container.insertBefore(row,rows[n]); else container.insertBefore(rows[n],row);
 }
-
 function saveTemplate() {
-  const name = document.getElementById('tpl-name').value.trim();
-  if (!name) { alert('Ponle un nombre al split'); return; }
-  const rows = document.querySelectorAll('#tpl-exercises .tpl-ex-row');
-  const exercises = [...rows].map(div => ({
-    name: div.querySelector('.tpl-ex-name').value.trim(),
-    setsCount: parseInt(div.querySelector('.tpl-ex-sets').value)||3,
-    unilateral: div.querySelector('.tpl-ex-uni').checked
-  })).filter(ex=>ex.name);
-  if (!exercises.length) { alert('Añade al menos un ejercicio'); return; }
-  if (state.editingTemplateId) {
-    const idx = state.templates.findIndex(t=>t.id===state.editingTemplateId);
-    state.templates[idx] = { id:state.editingTemplateId, name, exercises };
-  } else {
-    state.templates.push({ id:String(Date.now()), name, exercises });
-  }
+  const name=document.getElementById('tpl-name').value.trim(); if(!name){alert('Ponle un nombre');return;}
+  const rows=document.querySelectorAll('#tpl-exercises .tpl-ex-row');
+  const exercises=[...rows].map(div=>({name:div.querySelector('.tpl-ex-name').value.trim(),setsCount:parseInt(div.querySelector('.tpl-ex-sets').value)||3,unilateral:div.querySelector('.tpl-ex-uni').checked})).filter(ex=>ex.name);
+  if(!exercises.length){alert('Añade al menos un ejercicio');return;}
+  if(state.editingTemplateId){const idx=state.templates.findIndex(t=>t.id===state.editingTemplateId);state.templates[idx]={id:state.editingTemplateId,name,exercises};}
+  else{state.templates.push({id:String(Date.now()),name,exercises});}
   sync(); closeModal('modal-template'); renderTemplates();
 }
-
-function deleteTemplate(id) {
-  if (!confirm('¿Eliminar este split?')) return;
-  state.templates = state.templates.filter(t=>t.id!==id); sync(); renderTemplates();
-}
-
+function deleteTemplate(id) { if(!confirm('¿Eliminar?'))return; state.templates=state.templates.filter(t=>t.id!==id); sync(); renderTemplates(); }
 function renderTemplates() {
-  const el = document.getElementById('templates-list');
-  if (!state.templates.length) {
-    el.innerHTML = '<div style="color:var(--muted);text-align:center;padding:40px 0">Crea tu primer split.</div>';
-    return;
-  }
-  el.innerHTML = state.templates.map(t => {
-    const chips = (t.exercises||[]).map(e=>`<span class="chip">${e.name}${e.unilateral?' ⟷':''}</span>`).join('');
-    return `<div class="template-card">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--accent)">${t.name}</div>
-      <div style="font-size:11px;color:var(--muted);margin-bottom:6px">${(t.exercises||[]).length} ejercicios</div>
-      <div class="template-chips">${chips}</div>
-      <div class="template-actions">
-        <button class="btn btn-primary btn-sm" style="flex:1" onclick="startWorkout('${t.id}')">▶ Empezar</button>
-        <button class="btn btn-ghost btn-sm" onclick="openTemplateModal('${t.id}')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        </button>
-        <button class="btn btn-ghost btn-sm" onclick="deleteTemplate('${t.id}')" style="color:var(--accent2)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14H6L5,6"/></svg>
-        </button>
-      </div>
-    </div>`;
+  const el=document.getElementById('templates-list');
+  if(!state.templates.length){el.innerHTML='<div style="color:var(--muted);text-align:center;padding:40px 0">Crea tu primer split.</div>';return;}
+  el.innerHTML=state.templates.map(t=>{
+    const chips=(t.exercises||[]).map(e=>`<span class="chip">${e.name}${e.unilateral?' ⟷':''}</span>`).join('');
+    return `<div class="template-card"><div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--accent)">${t.name}</div><div style="font-size:11px;color:var(--muted);margin-bottom:6px">${(t.exercises||[]).length} ejercicios</div><div class="template-chips">${chips}</div><div class="template-actions"><button class="btn btn-primary btn-sm" style="flex:1" onclick="startWorkout('${t.id}')">▶ Empezar</button><button class="btn btn-ghost btn-sm" onclick="openTemplateModal('${t.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button><button class="btn btn-ghost btn-sm" onclick="deleteTemplate('${t.id}')" style="color:var(--accent2)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3,6 5,6 21,6"/><path d="M19,6l-1,14H6L5,6"/></svg></button></div></div>`;
   }).join('');
 }
 
-// ============ PROGRESS ============
 function setMetric(m) {
-  state.progressMetric = m;
-  document.getElementById('metric-topset').classList.toggle('active', m==='topset');
-  document.getElementById('metric-orm').classList.toggle('active', m==='orm');
+  state.progressMetric=m;
+  document.getElementById('metric-topset').classList.toggle('active',m==='topset');
+  document.getElementById('metric-orm').classList.toggle('active',m==='orm');
   renderProgressChart();
 }
-
 function renderProgress() {
-  const sel = document.getElementById('progress-ex-select');
-  const names = [...new Set(state.workouts.flatMap(w=>(w.exercises||[]).map(e=>e.name)))];
-  sel.innerHTML = names.map(n=>`<option value="${n}">${n}</option>`).join('');
+  const sel=document.getElementById('progress-ex-select');
+  const names=[...new Set(state.workouts.flatMap(w=>(w.exercises||[]).map(e=>e.name)))];
+  sel.innerHTML=names.map(n=>`<option value="${n}">${n}</option>`).join('');
   renderProgressChart();
 }
-
 function renderProgressChart() {
-  const name = document.getElementById('progress-ex-select').value;
-  if (!name) return;
-
-  const data = [];
-  state.workouts.forEach(w => {
-    const ex = (w.exercises||[]).find(e=>e.name===name);
-    if (!ex) return;
-    const done = (ex.sets||[]).filter(s=>s.done && (parseFloat(s.wL)||0)>0 && (parseInt(s.rL)||0)>0);
-    if (!done.length) return;
-    let value = 0;
-    if (state.progressMetric==='topset') {
-      value = Math.max(...done.map(s=>parseFloat(s.wL)||0));
-    } else {
-      // Epley 1RM = weight * (1 + reps/30)
-      value = Math.max(...done.map(s=>(parseFloat(s.wL)||0)*(1+(parseInt(s.rL)||0)/30)));
-    }
-    if (value>0) data.push({ date:w.date, value:Math.round(value*10)/10 });
+  const name=document.getElementById('progress-ex-select').value; if(!name)return;
+  const data=[];
+  state.workouts.forEach(w=>{
+    const ex=(w.exercises||[]).find(e=>e.name===name); if(!ex)return;
+    const done=(ex.sets||[]).filter(s=>s.done&&(parseFloat(s.wL)||0)>0&&(parseInt(s.rL)||0)>0); if(!done.length)return;
+    let value=state.progressMetric==='topset'
+      ?Math.max(...done.map(s=>parseFloat(s.wL)||0))
+      :Math.max(...done.map(s=>(parseFloat(s.wL)||0)*(1+(parseInt(s.rL)||0)/30)));
+    if(value>0)data.push({date:w.date,value:Math.round(value*10)/10});
   });
-
   data.sort((a,b)=>new Date(a.date)-new Date(b.date));
-  if (window.myChart) { window.myChart.destroy(); window.myChart=null; }
-
-  const statsEl = document.getElementById('progress-stats');
-  if (!data.length) {
-    statsEl.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px">Sin datos para este ejercicio.</div>';
-    return;
-  }
-
-  window.myChart = new Chart(document.getElementById('progress-chart'), {
-    type: 'line',
-    data: {
-      labels: data.map(d=>new Date(d.date).toLocaleDateString('es-ES',{day:'numeric',month:'short'})),
-      datasets: [{
-        data: data.map(d=>d.value),
-        borderColor:'#e8ff3c', backgroundColor:'rgba(232,255,60,.08)',
-        pointBackgroundColor:'#e8ff3c', pointRadius:5, tension:0.3, fill:true
-      }]
-    },
-    options: {
-      responsive:true,
-      plugins:{ legend:{display:false}, tooltip:{backgroundColor:'#1a1a1a',borderColor:'#2a2a2a',borderWidth:1,titleColor:'#e8ff3c',bodyColor:'#f0f0f0'} },
-      scales:{
-        y:{ grid:{color:'#1e1e1e'}, ticks:{color:'#666',font:{size:11}} },
-        x:{ grid:{display:false}, ticks:{color:'#666',font:{size:11}} }
-      }
-    }
-  });
-
-  const max = Math.max(...data.map(d=>d.value));
-  const diff = data[data.length-1].value - data[0].value;
-  statsEl.innerHTML = `<div class="progress-stats">
-    <div class="pstat"><div class="pstat-val">${max}kg</div><div class="pstat-lbl">${state.progressMetric==='topset'?'Mejor marca':'1RM máx'}</div></div>
-    <div class="pstat"><div class="pstat-val" style="color:${diff>=0?'var(--accent)':'var(--accent2)'}">${diff>=0?'+':''}${diff.toFixed(1)}kg</div><div class="pstat-lbl">Progreso</div></div>
-    <div class="pstat"><div class="pstat-val">${data.length}</div><div class="pstat-lbl">Sesiones</div></div>
-  </div>`;
+  if(window.myChart){window.myChart.destroy();window.myChart=null;}
+  const statsEl=document.getElementById('progress-stats');
+  if(!data.length){statsEl.innerHTML='<div style="color:var(--muted);text-align:center;padding:20px">Sin datos para este ejercicio.</div>';return;}
+  window.myChart=new Chart(document.getElementById('progress-chart'),{type:'line',data:{labels:data.map(d=>new Date(d.date).toLocaleDateString('es-ES',{day:'numeric',month:'short'})),datasets:[{data:data.map(d=>d.value),borderColor:'#e8ff3c',backgroundColor:'rgba(232,255,60,.08)',pointBackgroundColor:'#e8ff3c',pointRadius:5,tension:0.3,fill:true}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1a1a',borderColor:'#2a2a2a',borderWidth:1,titleColor:'#e8ff3c',bodyColor:'#f0f0f0'}},scales:{y:{grid:{color:'#1e1e1e'},ticks:{color:'#666',font:{size:11}}},x:{grid:{display:false},ticks:{color:'#666',font:{size:11}}}}}});
+  const max=Math.max(...data.map(d=>d.value));
+  const diff=data[data.length-1].value-data[0].value;
+  statsEl.innerHTML=`<div class="progress-stats"><div class="pstat"><div class="pstat-val">${max}kg</div><div class="pstat-lbl">${state.progressMetric==='topset'?'Mejor marca':'1RM máx'}</div></div><div class="pstat"><div class="pstat-val" style="color:${diff>=0?'var(--accent)':'var(--accent2)'}">${diff>=0?'+':''}${diff.toFixed(1)}kg</div><div class="pstat-lbl">Progreso</div></div><div class="pstat"><div class="pstat-val">${data.length}</div><div class="pstat-lbl">Sesiones</div></div></div>`;
 }
 
 renderHome();
